@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planner - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --pastel-blue: #E0E7FF;
+            --pastel-green: #D1FAE5;
+            --pastel-red: #FEE2E2;
+            --pastel-yellow: #FEF3C7;
+            --pastel-purple: #EDE9FE;
+            --pastel-pink: #FCE7F3;
+            --pastel-gray: #F3F4F6;
+            --indian-saffron: #FF9933;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tab-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            position: relative;
+            height: 380px;
+            overflow: hidden;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        .loader.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .form-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .form-panel.hidden {
+            transform: translateX(100%);
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 10px;
+            }
+
+            .glass-card {
+                padding: 30px 20px;
+            }
+
+            .form-container {
+                height: 320px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="glass-card">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="ri-wallet-3-line text-white text-2xl"></i>
+                </div>
+                <div class="logo-text">Cashual</div>
+            </div>
+
+            <div class="tab-container">
+                <button class="tab active" id="loginTab">Login</button>
+                <button class="tab" id="registerTab">Register</button>
+            </div>
+
+            <div class="form-container">
+                <!-- Login Form -->
+                <div id="loginPanel" class="form-panel">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="loginUsername" class="input" placeholder="Enter your username"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="password-container">
+                                <input type="password" id="loginPassword" class="input"
+                                    placeholder="Enter your password" required>
+                                <button type="button" class="password-toggle" id="loginPasswordToggle">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Login</span>
+                            <div class="loader" id="loginLoader"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerPanel" class="form-panel hidden">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="registerUsername" class="input" placeholder="Choose a username"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="registerEmail" class="input" placeholder="Enter your email"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="password-container">
+                                <input type="password" id="registerPassword" class="input"
+                                    placeholder="Create a password" required>
+                                <button type="button" class="password-toggle" id="registerPasswordToggle">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <div class="password-container">
+                                <input type="password" id="confirmPassword" class="input"
+                                    placeholder="Confirm your password" required>
+                                <button type="button" class="password-toggle" id="confirmPasswordToggle">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Register</span>
+                            <div class="loader" id="registerLoader"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i id="notificationIcon" class="ri-check-line text-xl"></i>
+        <div>
+            <p id="notificationTitle" class="font-medium"></p>
+            <p id="notificationMessage" class="text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3HbtBbtcGf8b54DzlLfatJ_Xfdum-yqA",
+            authDomain: "budget-ce802.firebaseapp.com",
+            databaseURL: "https://budget-ce802-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "budget-ce802",
+            storageBucket: "budget-ce802.firebasestorage.app",
+            messagingSenderId: "346208284823",
+            appId: "1:346208284823:web:c580812cce390463e3f9d2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // DOM elements
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginPanel = document.getElementById('loginPanel');
+        const registerPanel = document.getElementById('registerPanel');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginPasswordToggle = document.getElementById('loginPasswordToggle');
+        const registerPasswordToggle = document.getElementById('registerPasswordToggle');
+        const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+        const loginLoader = document.getElementById('loginLoader');
+        const registerLoader = document.getElementById('registerLoader');
+
+        // Event listeners
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginPanel.classList.remove('hidden');
+            registerPanel.classList.add('hidden');
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerPanel.classList.remove('hidden');
+            loginPanel.classList.add('hidden');
+        });
+
+        loginPasswordToggle.addEventListener('click', () => {
+            const passwordInput = document.getElementById('loginPassword');
+            const icon = loginPasswordToggle.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'ri-eye-off-line';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'ri-eye-line';
+            }
+        });
+
+        registerPasswordToggle.addEventListener('click', () => {
+            const passwordInput = document.getElementById('registerPassword');
+            const icon = registerPasswordToggle.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'ri-eye-off-line';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'ri-eye-line';
+            }
+        });
+
+        confirmPasswordToggle.addEventListener('click', () => {
+            const passwordInput = document.getElementById('confirmPassword');
+            const icon = confirmPasswordToggle.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'ri-eye-off-line';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'ri-eye-line';
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            loginLoader.classList.add('active');
+
+            // Custom authentication using Firebase Realtime Database
+            db.ref('users').orderByChild('username').equalTo(username).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        const userId = Object.keys(userData)[0];
+                        const user = userData[userId];
+
+                        if (user.password === password) {
+                            // Store user info in localStorage
+                            localStorage.setItem('userId', userId);
+                            localStorage.setItem('username', username);
+
+                            showNotification('success', 'Login Successful', 'Welcome back, ' + username);
+
+                            // Redirect to home page
+                            setTimeout(() => {
+                                window.location.href = 'home.html';
+                            }, 1500);
+                        } else {
+                            showNotification('error', 'Login Failed', 'Incorrect password');
+                        }
+                    } else {
+                        showNotification('error', 'Login Failed', 'User not found');
+                    }
+
+                    loginLoader.classList.remove('active');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                    loginLoader.classList.remove('active');
+                });
+        });
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showNotification('error', 'Registration Failed', 'Passwords do not match');
+                return;
+            }
+
+            registerLoader.classList.add('active');
+
+            // Check if username already exists
+            db.ref('users').orderByChild('username').equalTo(username).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        showNotification('error', 'Registration Failed', 'Username already exists');
+                        registerLoader.classList.remove('active');
+                        return;
+                    }
+
+                    // Create new user
+                    const userId = db.ref().child('users').push().key;
+
+                    db.ref('users/' + userId).set({
+                        username: username,
+                        email: email,
+                        password: password,
+                        createdAt: new Date().getTime()
+                    })
+                        .then(() => {
+                            // Store user info in localStorage
+                            localStorage.setItem('userId', userId);
+                            localStorage.setItem('username', username);
+
+                            showNotification('success', 'Registration Successful', 'Welcome, ' + username);
+
+                            // Redirect to home page
+                            setTimeout(() => {
+                                window.location.href = 'home.html';
+                            }, 1500);
+                        })
+                        .catch((error) => {
+                            showNotification('error', 'Error', error.message);
+                            registerLoader.classList.remove('active');
+                        });
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                    registerLoader.classList.remove('active');
+                });
+        });
+
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            const userId = localStorage.getItem('userId');
+            const username = localStorage.getItem('username');
+
+            if (userId && username) {
+                // Verify user exists in database before auto-login
+                db.ref('users/' + userId).once('value')
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            // User exists, redirect to home page
+                            window.location.href = 'home.html';
+                        } else {
+                            // User doesn't exist, clear localStorage
+                            localStorage.removeItem('userId');
+                            localStorage.removeItem('username');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error verifying user:', error);
+                        localStorage.removeItem('userId');
+                        localStorage.removeItem('username');
+                    });
+            }
+        });
+
+        // Notification function
+        function showNotification(type, title, message) {
+            const notificationEl = document.getElementById('notification');
+            const iconEl = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            // Set notification type
+            notificationEl.className = `notification ${type}`;
+
+            // Set icon
+            switch (type) {
+                case 'success':
+                    iconEl.className = 'ri-check-line text-xl text-green-600';
+                    break;
+                case 'error':
+                    iconEl.className = 'ri-error-warning-line text-xl text-red-600';
+                    break;
+                case 'info':
+                    iconEl.className = 'ri-information-line text-xl text-blue-600';
+                    break;
+            }
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Show notification
+            notificationEl.classList.add('show');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notificationEl.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

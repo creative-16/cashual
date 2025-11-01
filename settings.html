@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Budget Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --pastel-blue: #E0E7FF;
+            --pastel-green: #D1FAE5;
+            --pastel-red: #FEE2E2;
+            --pastel-yellow: #FEF3C7;
+            --pastel-purple: #EDE9FE;
+            --pastel-pink: #FCE7F3;
+            --pastel-gray: #F3F4F6;
+            --indian-saffron: #FF9933;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .pastel-card {
+            background: var(--pastel-gray);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .pastel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-outline {
+            background: var(--pastel-gray);
+            border: 2px solid var(--gray);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--pastel-blue);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-icon:hover::before {
+            left: 100%;
+        }
+
+        .btn-icon-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-icon-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn i {
+            font-size: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.home {
+            background-color: var(--primary);
+        }
+
+        .nav-btn.home i {
+            color: white;
+        }
+
+        .nav-btn.home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn.overview {
+            background-color: var(--info);
+        }
+
+        .nav-btn.overview i {
+            color: white;
+        }
+
+        .nav-btn.overview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn.accounts {
+            background-color: var(--secondary);
+        }
+
+        .nav-btn.accounts i {
+            color: white;
+        }
+
+        .nav-btn.accounts:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .nav-btn.budget {
+            background-color: var(--warning);
+        }
+
+        .nav-btn.budget i {
+            color: white;
+        }
+
+        .nav-btn.budget:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .nav-btn.settings {
+            background-color: var(--gray);
+        }
+
+        .nav-btn.settings i {
+            color: white;
+        }
+
+        .nav-btn.settings:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .nav-btn.profile {
+            background-color: var(--purple);
+        }
+
+        .nav-btn.profile i {
+            color: white;
+        }
+
+        .nav-btn.profile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--gray);
+            position: relative;
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .tab:hover::after {
+            width: 100%;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            width: 100%;
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 10px;
+            margin-top: 8px;
+            min-width: 200px;
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .profile-menu-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .profile-menu-divider {
+            height: 1px;
+            background: #E5E7EB;
+            margin: 5px 0;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: white;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active .mobile-menu-content {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .mobile-menu-item i {
+            font-size: 20px;
+        }
+
+        .mobile-menu-item.home {
+            color: var(--primary);
+        }
+
+        .mobile-menu-item.overview {
+            color: var(--info);
+        }
+
+        .mobile-menu-item.accounts {
+            color: var(--secondary);
+        }
+
+        .mobile-menu-item.budget {
+            color: var(--warning);
+        }
+
+        .mobile-menu-item.settings {
+            color: var(--gray);
+        }
+
+        .mobile-menu-item.profile {
+            color: var(--purple);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .report-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .tools-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .tools-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .tools-modal-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #E5E7EB;
+            transition: all 0.3s ease;
+        }
+
+        .color-picker-wrapper:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-picker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+
+            .glass-card,
+            .pastel-card {
+                padding: 16px;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .nav-btn i {
+                font-size: 24px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .tools-modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <h2 class="text-xl font-bold">Menu</h2>
+                <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="mobile-menu-item home" onclick="navigateTo('home.html')">
+                <i class="ri-home-4-line"></i>
+                <span>Home</span>
+            </div>
+            <div class="mobile-menu-item overview" onclick="navigateTo('overview.html')">
+                <i class="ri-dashboard-line"></i>
+                <span>Overview</span>
+            </div>
+            <div class="mobile-menu-item accounts" onclick="navigateTo('accounts.html')">
+                <i class="ri-wallet-line"></i>
+                <span>Accounts</span>
+            </div>
+            <div class="mobile-menu-item budget" onclick="navigateTo('budget.html')">
+                <i class="ri-pie-chart-line"></i>
+                <span>Budget</span>
+            </div>
+            <div class="mobile-menu-item settings" onclick="navigateTo('settings.html')">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </div>
+            <div class="mobile-menu-item profile" onclick="navigateTo('profile.html')">
+                <i class="ri-user-3-line"></i>
+                <span>Profile</span>
+            </div>
+            <div class="mobile-menu-item" onclick="logout()">
+                <i class="ri-logout-box-line"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="nav-container">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="ri-menu-line text-2xl text-gray-700"></i>
+                </button>
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl flex items-center justify-center">
+                    <i class="ri-settings-3-line text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Settings
+                    </h1>
+                    <p class="text-sm text-gray-600">Edit Your Preferences</p>
+                </div>
+            </div>
+            <div class="desktop-nav flex items-center gap-4">
+                <button class="nav-btn home" onclick="navigateTo('home.html')" title="Home">
+                    <i class="ri-home-4-line"></i>
+                </button>
+                <button class="nav-btn overview" onclick="navigateTo('overview.html')" title="Overview">
+                    <i class="ri-dashboard-line"></i>
+                </button>
+                <button class="nav-btn accounts" onclick="navigateTo('accounts.html')" title="Accounts">
+                    <i class="ri-wallet-line"></i>
+                </button>
+                <button class="nav-btn budget" onclick="navigateTo('budget.html')" title="Budget">
+                    <i class="ri-pie-chart-line"></i>
+                </button>
+                <button class="nav-btn settings" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="nav-btn profile" title="Profile" onclick="toggleProfileMenu(event)">
+                        <i class="ri-user-3-line"></i>
+                    </button>
+                    <div id="profileMenu" class="profile-menu">
+                        <a href="profile.html">
+                            <div class="profile-menu-item">
+                                <i class="ri-user-line"></i>
+                                <span id="profileUsername">Username</span>
+                            </div>
+                        </a>
+                        <div class="profile-menu-divider"></div>
+                        <div class="profile-menu-item" onclick="openToolsModal()">
+                            <i class="ri-tools-line"></i>
+                            <span>Financial Tools</span>
+                        </div>
+                        <div class="profile-menu-divider"></div>
+                        <div class="profile-menu-item" onclick="logout()">
+                            <i class="ri-logout-box-line"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Tabs Section -->
+        <div class="glass-card">
+            <div class="flex border-b mb-6 overflow-x-auto">
+                <div class="tab active" data-tab="preferences">
+                    <i class="ri-settings-3-line mr-2"></i> Preferences
+                </div>
+                <div class="tab" data-tab="tags">
+                    <i class="ri-price-tag-3-line mr-2"></i> Tags
+                </div>
+                <div class="tab" data-tab="backup">
+                    <i class="ri-refresh-line mr-2"></i> Backup & Restore
+                </div>
+            </div>
+
+            <!-- Preferences Tab -->
+            <div id="preferencesTab" class="tab-content">
+                <h3 class="text-xl font-bold mb-4">Preferences</h3>
+
+                <div class="space-y-6">
+                    <div class="report-card">
+                        <h4 class="text-lg font-medium mb-3">General Settings</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Currency</label>
+                                <select id="currency" class="select">
+                                    <option value="INR" selected>INR (₹)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="JPY">JPY (¥)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Timezone</label>
+                                <select id="timezone" class="select">
+                                    <option value="Asia/Kolkata" selected>India (IST)</option>
+                                    <option value="UTC">UTC</option>
+                                    <option value="America/New_York">Eastern Time</option>
+                                    <option value="America/Los_Angeles">Pacific Time</option>
+                                    <option value="Europe/London">London</option>
+                                    <option value="Asia/Tokyo">Tokyo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Default Account</label>
+                            <select id="defaultAccount" class="select">
+                                <option value="">Select Default Account</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Language</label>
+                            <select id="language" class="select">
+                                <option value="en" selected>English</option>
+                                <option value="hi">Hindi</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                            </select>
+                        </div>
+                        <button id="savePreferencesBtn" class="btn btn-primary">
+                            <i class="ri-save-line"></i> Save Preferences
+                        </button>
+                    </div>
+
+                    <div class="report-card">
+                        <h4 class="text-lg font-medium mb-3">Notification Settings</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Budget Alerts</p>
+                                    <p class="text-sm text-gray-600">Get notified when you're close to budget limits</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="budgetAlerts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Weekly Summary</p>
+                                    <p class="text-sm text-gray-600">Receive a weekly summary of your spending</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="weeklySummary" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Monthly Report</p>
+                                    <p class="text-sm text-gray-600">Get a detailed monthly report of your finances</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="monthlyReport">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button id="saveNotificationSettingsBtn" class="btn btn-primary mt-4">
+                            <i class="ri-save-line"></i> Save Notification Settings
+                        </button>
+                    </div>
+
+                    <div class="report-card">
+                        <h4 class="text-lg font-medium mb-3">Privacy Settings</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Data Analytics</p>
+                                    <p class="text-sm text-gray-600">Help us improve by sharing anonymous usage data</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="dataAnalytics">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Personalized Insights</p>
+                                    <p class="text-sm text-gray-600">Get personalized financial insights based on your
+                                        data</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="personalizedInsights" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button id="savePrivacySettingsBtn" class="btn btn-primary mt-4">
+                            <i class="ri-save-line"></i> Save Privacy Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags Tab -->
+            <div id="tagsTab" class="tab-content hidden">
+                <h3 class="text-xl font-bold mb-4">Manage Tags</h3>
+
+                <div class="report-card">
+                    <h4 class="text-lg font-medium mb-3">Existing Tags</h4>
+                    <div id="tagsList" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                        <!-- Tags will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <h4 class="text-lg font-medium mb-3">Add New Tag</h4>
+                    <div class="flex gap-2 items-center">
+                        <input type="text" id="newTagName" class="input" placeholder="New tag name">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="newTagColor" class="color-picker" value="#4F46E5">
+                            <div id="colorPreview" class="color-preview" style="background-color: #4F46E5;"></div>
+                        </div>
+                        <button id="addTagBtn" class="btn-icon btn-icon-primary" title="Add Tag">
+                            <i class="ri-add-line text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <h4 class="text-lg font-medium mb-3">Tag Usage Statistics</h4>
+                    <div class="chart-container">
+                        <canvas id="tagUsageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup & Restore Tab -->
+            <div id="backupTab" class="tab-content hidden">
+                <h3 class="text-xl font-bold mb-4">Backup & Restore</h3>
+
+                <div class="space-y-6">
+                    <div class="report-card">
+                        <h4 class="text-lg font-medium mb-3">Automatic Backup</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium">Enable Automatic Backup</p>
+                                    <p class="text-sm text-gray-600">Automatically backup your data to the cloud</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="autoBackup" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Backup Frequency</label>
+                                <select id="backupFrequency" class="select">
+                                    <option value="daily" selected>Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="saveBackupSettingsBtn" class="btn btn-primary mt-4">
+                            <i class="ri-save-line"></i> Save Backup Settings
+                        </button>
+                    </div>
+
+                    <div class="report-card">
+                        <h4 class="text-lg font-medium mb-3">Manual Backup</h4>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium">Last Backup</p>
+                                <p class="text-sm text-gray-600" id="lastBackupTime">Never</p>
+                            </div>
+                            <button id="manualBackupBtn" class="btn btn-primary">
+                                <i class="ri-refresh-line"></i> Backup Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h4 class="text-lg font-medium mb-3">Restore Data</h4>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium">Restore from backup file</p>
+                                <p class="text-sm text-gray-600">Select a backup file to restore your data</p>
+                            </div>
+                            <div>
+                                <input type="file" id="restoreFile" class="input" accept=".json" style="width: auto;">
+                                <button id="restoreBtn" class="btn btn-outline ml-2">
+                                    <i class="ri-upload-line"></i> Restore
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Tools Modal -->
+    <div id="toolsModal" class="tools-modal">
+        <div class="tools-modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Financial Tools</h3>
+                <button id="closeToolsModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="report-card">
+                    <h4 class="text-lg font-semibold mb-3">Currency Converter</h4>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <input type="number" id="converterAmount" class="input" placeholder="Amount">
+                        <select id="converterFrom" class="select">
+                            <option value="INR" selected>INR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                        <select id="converterTo" class="select">
+                            <option value="INR">INR</option>
+                            <option value="USD" selected>USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                        <div class="input" id="converterResult">Result</div>
+                    </div>
+                    <button id="convertBtn" class="btn btn-primary">
+                        <i class="ri-exchange-line"></i> Convert
+                    </button>
+                </div>
+
+                <div class="report-card">
+                    <h4 class="text-lg font-semibold mb-3">Budget Calculator</h4>
+                    <div class="space-y-2 mb-3">
+                        <input type="number" id="budgetIncome" class="input" placeholder="Monthly Income">
+                        <input type="number" id="budgetSavings" class="input" placeholder="Savings Goal (%)">
+                        <div class="input" id="budgetResult">Recommended Budget</div>
+                    </div>
+                    <button id="calculateBudgetBtn" class="btn btn-primary">
+                        <i class="ri-calculator-line"></i> Calculate
+                    </button>
+                </div>
+
+                <div class="report-card">
+                    <h4 class="text-lg font-semibold mb-3">Loan Calculator</h4>
+                    <div class="space-y-2 mb-3">
+                        <input type="number" id="loanAmount" class="input" placeholder="Loan Amount">
+                        <input type="number" id="loanRate" class="input" placeholder="Interest Rate (%)">
+                        <input type="number" id="loanTerm" class="input" placeholder="Loan Term (months)">
+                        <div class="input" id="loanResult">Monthly Payment</div>
+                    </div>
+                    <button id="calculateLoanBtn" class="btn btn-primary">
+                        <i class="ri-calculator-line"></i> Calculate
+                    </button>
+                </div>
+
+                <div class="report-card">
+                    <h4 class="text-lg font-semibold mb-3">Savings Calculator</h4>
+                    <div class="space-y-2 mb-3">
+                        <input type="number" id="savingsAmount" class="input" placeholder="Initial Amount">
+                        <input type="number" id="savingsMonthly" class="input" placeholder="Monthly Contribution">
+                        <input type="number" id="savingsRate" class="input" placeholder="Interest Rate (%)">
+                        <input type="number" id="savingsYears" class="input" placeholder="Years">
+                        <div class="input" id="savingsResult">Future Value</div>
+                    </div>
+                    <button id="calculateSavingsBtn" class="btn btn-primary">
+                        <i class="ri-calculator-line"></i> Calculate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i id="notificationIcon" class="ri-check-line text-xl"></i>
+        <div>
+            <p id="notificationTitle" class="font-medium"></p>
+            <p id="notificationMessage" class="text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3HbtBbtcGf8b54DzlLfatJ_Xfdum-yqA",
+            authDomain: "budget-ce802.firebaseapp.com",
+            databaseURL: "https://budget-ce802-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "budget-ce802",
+            storageBucket: "budget-ce802.firebasestorage.app",
+            messagingSenderId: "346208284823",
+            appId: "1:346208284823:web:c580812cce390463e3f9d2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        // Global variables
+        let transactions = [];
+        let tags = [];
+        let accounts = [];
+        let budgets = [];
+        let charts = {};
+        let currencySymbol = '₹';
+        let defaultAccountId = '';
+        let userId = '';
+        let username = '';
+
+        // Exchange rates (simplified for demo)
+        const exchangeRates = {
+            INR: { USD: 0.012, EUR: 0.011, GBP: 0.0095, JPY: 1.73 },
+            USD: { INR: 82.5, EUR: 0.92, GBP: 0.79, JPY: 143.5 },
+            EUR: { INR: 89.5, USD: 1.09, GBP: 0.86, JPY: 155.8 },
+            GBP: { INR: 105.2, USD: 1.27, EUR: 1.16, JPY: 181.3 },
+            JPY: { INR: 0.58, USD: 0.007, EUR: 0.0064, GBP: 0.0055 }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            initializeApp();
+            setupEventListeners();
+            loadInitialData();
+        });
+
+        function checkAuthStatus() {
+            userId = localStorage.getItem('userId');
+            username = localStorage.getItem('username');
+
+            if (!userId || !username) {
+                // User is not logged in, redirect to login page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update username display
+            document.getElementById('profileUsername').textContent = username;
+        }
+
+        function initializeApp() {
+            // Initialize charts
+            initializeCharts();
+        }
+
+        function setupEventListeners() {
+            // Tab navigation
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const profileDropdown = document.querySelector('.profile-dropdown');
+                const profileMenu = document.getElementById('profileMenu');
+
+                if (!profileDropdown.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+            });
+
+            // Settings buttons
+            document.getElementById('savePreferencesBtn').addEventListener('click', savePreferences);
+            document.getElementById('saveNotificationSettingsBtn').addEventListener('click', saveNotificationSettings);
+            document.getElementById('savePrivacySettingsBtn').addEventListener('click', savePrivacySettings);
+            document.getElementById('saveBackupSettingsBtn').addEventListener('click', saveBackupSettings);
+
+            // Tags
+            document.getElementById('addTagBtn').addEventListener('click', addTag);
+
+            // Color picker
+            document.getElementById('newTagColor').addEventListener('input', (e) => {
+                document.getElementById('colorPreview').style.backgroundColor = e.target.value;
+            });
+
+            // Backup and restore
+            document.getElementById('manualBackupBtn').addEventListener('click', handleBackup);
+            document.getElementById('restoreBtn').addEventListener('click', handleRestore);
+
+            // Tools modal
+            document.getElementById('closeToolsModal').addEventListener('click', () => {
+                document.getElementById('toolsModal').classList.remove('active');
+            });
+
+            // Tools
+            document.getElementById('convertBtn').addEventListener('click', convertCurrency);
+            document.getElementById('calculateBudgetBtn').addEventListener('click', calculateBudget);
+            document.getElementById('calculateLoanBtn').addEventListener('click', calculateLoan);
+            document.getElementById('calculateSavingsBtn').addEventListener('click', calculateSavings);
+        }
+
+        function loadInitialData() {
+            // Load data from Firebase
+            db.ref(`users/${userId}/data`).once('value')
+                .then((snapshot) => {
+                    const data = snapshot.val() || {};
+
+                    // Load preferences
+                    if (data.preferences) {
+                        currencySymbol = data.preferences.currency === 'USD' ? '$' :
+                            data.preferences.currency === 'EUR' ? '€' :
+                                data.preferences.currency === 'GBP' ? '£' :
+                                    data.preferences.currency === 'JPY' ? '¥' : '₹';
+                        defaultAccountId = data.preferences.defaultAccount || '';
+
+                        // Update UI with preferences
+                        document.getElementById('currency').value = data.preferences.currency || 'INR';
+                        document.getElementById('timezone').value = data.preferences.timezone || 'Asia/Kolkata';
+                        document.getElementById('language').value = data.preferences.language || 'en';
+                    }
+
+                    // Load notification settings
+                    if (data.notificationSettings) {
+                        document.getElementById('budgetAlerts').checked = data.notificationSettings.budgetAlerts !== false;
+                        document.getElementById('weeklySummary').checked = data.notificationSettings.weeklySummary !== false;
+                        document.getElementById('monthlyReport').checked = data.notificationSettings.monthlyReport || false;
+                    }
+
+                    // Load privacy settings
+                    if (data.privacySettings) {
+                        document.getElementById('dataAnalytics').checked = data.privacySettings.dataAnalytics || false;
+                        document.getElementById('personalizedInsights').checked = data.privacySettings.personalizedInsights !== false;
+                    }
+
+                    // Load backup settings
+                    if (data.backupSettings) {
+                        document.getElementById('autoBackup').checked = data.backupSettings.autoBackup !== false;
+                        document.getElementById('backupFrequency').value = data.backupSettings.frequency || 'daily';
+                    }
+
+                    // Load tags
+                    if (data.tags) {
+                        tags = Object.keys(data.tags).map(id => ({ id, ...data.tags[id] }));
+                    }
+
+                    // Load accounts
+                    if (data.accounts) {
+                        accounts = Object.keys(data.accounts).map(id => ({ id, ...data.accounts[id] }));
+                    }
+
+                    // Load transactions
+                    if (data.transactions) {
+                        transactions = Object.keys(data.transactions).map(id => ({ id, ...data.transactions[id] }));
+                        transactions.sort((a, b) => b.timestamp - a.timestamp);
+                    }
+
+                    // Load budgets
+                    if (data.budgets) {
+                        budgets = Object.keys(data.budgets).map(id => ({ id, ...data.budgets[id] }));
+                    }
+
+                    // Update UI
+                    populateSelects();
+                    renderTags();
+                    updateTagUsageChart();
+                    suggestNewTagColor();
+
+                    // Set up real-time listeners
+                    setupRealtimeListeners();
+                })
+                .catch((error) => {
+                    console.error('Error loading data:', error);
+                    showNotification('error', 'Error', 'Failed to load data');
+                });
+        }
+
+        function setupRealtimeListeners() {
+            // Listen for tags changes
+            db.ref(`users/${userId}/data/tags`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                tags = Object.keys(data).map(id => ({ id, ...data[id] }));
+                populateSelects();
+                renderTags();
+                updateTagUsageChart();
+            });
+        }
+
+        function populateSelects() {
+            // Populate default account select
+            const defaultAccountSelect = document.getElementById('defaultAccount');
+            defaultAccountSelect.innerHTML = '<option value="">Select Default Account</option>';
+
+            accounts.forEach(account => {
+                const option = document.createElement('option');
+                option.value = account.id;
+                option.textContent = account.name;
+                defaultAccountSelect.appendChild(option);
+            });
+
+            if (defaultAccountId) {
+                defaultAccountSelect.value = defaultAccountId;
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-tab') === tabName) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`${tabName}Tab`).classList.remove('hidden');
+        }
+
+        function savePreferences() {
+            const currency = document.getElementById('currency').value;
+            const timezone = document.getElementById('timezone').value;
+            const language = document.getElementById('language').value;
+            const defaultAccount = document.getElementById('defaultAccount').value;
+
+            // Update currency symbol
+            currencySymbol = currency === 'USD' ? '$' :
+                currency === 'EUR' ? '€' :
+                    currency === 'GBP' ? '£' :
+                        currency === 'JPY' ? '¥' : '₹';
+
+            // Update default account
+            defaultAccountId = defaultAccount;
+
+            db.ref(`users/${userId}/data/preferences`).update({
+                currency,
+                timezone,
+                language,
+                defaultAccount,
+                lastUpdated: new Date().getTime()
+            })
+                .then(() => {
+                    showNotification('success', 'Preferences Saved', 'Your preferences have been updated');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function saveNotificationSettings() {
+            const budgetAlerts = document.getElementById('budgetAlerts').checked;
+            const weeklySummary = document.getElementById('weeklySummary').checked;
+            const monthlyReport = document.getElementById('monthlyReport').checked;
+
+            db.ref(`users/${userId}/data/notificationSettings`).set({
+                budgetAlerts,
+                weeklySummary,
+                monthlyReport,
+                lastUpdated: new Date().getTime()
+            })
+                .then(() => {
+                    showNotification('success', 'Notification Settings Saved', 'Your notification preferences have been updated');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function savePrivacySettings() {
+            const dataAnalytics = document.getElementById('dataAnalytics').checked;
+            const personalizedInsights = document.getElementById('personalizedInsights').checked;
+
+            db.ref(`users/${userId}/data/privacySettings`).set({
+                dataAnalytics,
+                personalizedInsights,
+                lastUpdated: new Date().getTime()
+            })
+                .then(() => {
+                    showNotification('success', 'Privacy Settings Saved', 'Your privacy preferences have been updated');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function saveBackupSettings() {
+            const autoBackup = document.getElementById('autoBackup').checked;
+            const backupFrequency = document.getElementById('backupFrequency').value;
+
+            db.ref(`users/${userId}/data/backupSettings`).set({
+                autoBackup,
+                frequency: backupFrequency,
+                lastUpdated: new Date().getTime()
+            })
+                .then(() => {
+                    showNotification('success', 'Backup Settings Saved', 'Your backup preferences have been updated');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function renderTags() {
+            const tagsList = document.getElementById('tagsList');
+            tagsList.innerHTML = '';
+
+            tags.forEach(tag => {
+                const tagItem = document.createElement('div');
+                tagItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                tagItem.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full" style="background-color: ${tag.color}"></div>
+                        <span>${tag.name}</span>
+                        <span class="text-sm text-gray-500">(${tag.usageCount || 0} uses)</span>
+                    </div>
+                    <button class="text-red-500 hover:text-red-700" onclick="deleteTag('${tag.id}')">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                `;
+                tagsList.appendChild(tagItem);
+            });
+        }
+
+        function updateTagUsageChart() {
+            const ctx = document.getElementById('tagUsageChart').getContext('2d');
+
+            if (charts.tagUsage) {
+                charts.tagUsage.destroy();
+            }
+
+            // Sort tags by usage count
+            const sortedTags = [...tags].sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0)).slice(0, 10);
+
+            charts.tagUsage = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedTags.map(tag => tag.name),
+                    datasets: [{
+                        label: 'Usage Count',
+                        data: sortedTags.map(tag => tag.usageCount || 0),
+                        backgroundColor: sortedTags.map(tag => tag.color),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function suggestNewTagColor() {
+            // Array of predefined colors
+            const predefinedColors = [
+                '#6366F1', '#8B5CF6', '#EC4899', '#EF4444', '#F59E0B',
+                '#10B981', '#14B8A6', '#06B6D4', '#3B82F6', '#6366F1',
+                '#8B5CF6', '#A855F7', '#D946EF', '#EC4899', '#F43F5E',
+                '#EF4444', '#F97316', '#F59E0B', '#EAB308', '#84CC16',
+                '#22C55E', '#10B981', '#14B8A6', '#06B6D4', '#0EA5E9',
+                '#3B82F6', '#6366F1', '#8B5CF6', '#A855F7', '#D946EF'
+            ];
+
+            // Get colors already used by tags
+            const usedColors = tags.map(tag => tag.color);
+
+            // Find the first unused color
+            let suggestedColor = predefinedColors.find(color => !usedColors.includes(color));
+
+            // If all colors are used, generate a random color
+            if (!suggestedColor) {
+                suggestedColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+            }
+
+            // Set the suggested color
+            document.getElementById('newTagColor').value = suggestedColor;
+            document.getElementById('colorPreview').style.backgroundColor = suggestedColor;
+        }
+
+        function addTag() {
+            const name = document.getElementById('newTagName').value.trim();
+            const color = document.getElementById('newTagColor').value;
+
+            if (!name) {
+                showNotification('error', 'Missing Information', 'Please enter a tag name');
+                return;
+            }
+
+            const tagId = db.ref().child(`users/${userId}/data/tags`).push().key;
+
+            db.ref(`users/${userId}/data/tags/${tagId}`).set({
+                name,
+                color,
+                createdAt: new Date().getTime(),
+                usageCount: 0
+            })
+                .then(() => {
+                    showNotification('success', 'Tag Added', 'Your tag has been created');
+                    document.getElementById('newTagName').value = '';
+                    suggestNewTagColor();
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function deleteTag(tagId) {
+            if (!confirm('Are you sure you want to delete this tag?')) return;
+
+            db.ref(`users/${userId}/data/tags/${tagId}`).remove()
+                .then(() => {
+                    showNotification('success', 'Tag Deleted', 'The tag has been removed');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function handleBackup() {
+            const data = {
+                transactions,
+                tags,
+                accounts,
+                budgets,
+                preferences: {
+                    currency: currencySymbol === '$' ? 'USD' :
+                        currencySymbol === '€' ? 'EUR' :
+                            currencySymbol === '£' ? 'GBP' :
+                                currencySymbol === '¥' ? 'JPY' : 'INR',
+                    defaultAccount: defaultAccountId
+                },
+                backedUpAt: new Date().toISOString()
+            };
+
+            // Upload to Firebase Storage
+            const storageRef = storage.ref();
+            const backupRef = storage.ref(`backups/${userId}/${new Date().getTime()}.json`);
+
+            backupRef.putString(JSON.stringify(data))
+                .then(() => {
+                    // Update last backup time
+                    db.ref(`users/${userId}/meta/lastBackupTime`).set(new Date().getTime());
+
+                    const date = new Date();
+                    document.getElementById('lastBackupTime').textContent = date.toLocaleString();
+                    showNotification('success', 'Backup Successful', 'Your data has been backed up to the cloud');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function handleRestore() {
+            const fileInput = document.getElementById('restoreFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showNotification('error', 'No File Selected', 'Please select a backup file to restore');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.value);
+
+                    if (!confirm('Are you sure you want to restore this backup? This will replace all your current data.')) {
+                        return;
+                    }
+
+                    // Restore data
+                    const updates = {};
+
+                    if (data.transactions) {
+                        updates[`users/${userId}/data/transactions`] = data.transactions;
+                    }
+
+                    if (data.tags) {
+                        updates[`users/${userId}/data/tags`] = data.tags;
+                    }
+
+                    if (data.accounts) {
+                        updates[`users/${userId}/data/accounts`] = data.accounts;
+                    }
+
+                    if (data.budgets) {
+                        updates[`users/${userId}/data/budgets`] = data.budgets;
+                    }
+
+                    if (data.preferences) {
+                        updates[`users/${userId}/data/preferences`] = data.preferences;
+
+                        // Update currency symbol and default account
+                        currencySymbol = data.preferences.currency === 'USD' ? '$' :
+                            data.preferences.currency === 'EUR' ? '€' :
+                                data.preferences.currency === 'GBP' ? '£' :
+                                    data.preferences.currency === 'JPY' ? '¥' : '₹';
+                        defaultAccountId = data.preferences.defaultAccount || '';
+                    }
+
+                    db.ref().update(updates)
+                        .then(() => {
+                            showNotification('success', 'Restore Successful', 'Your data has been restored');
+                            fileInput.value = '';
+                            location.reload(); // Reload to update UI
+                        })
+                        .catch((error) => {
+                            showNotification('error', 'Error', error.message);
+                        });
+                } catch (error) {
+                    showNotification('error', 'Invalid File', 'The selected file is not a valid backup file');
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        function openToolsModal() {
+            document.getElementById('toolsModal').classList.add('active');
+            document.getElementById('profileMenu').classList.remove('active');
+        }
+
+        function convertCurrency() {
+            const amount = parseFloat(document.getElementById('converterAmount').value);
+            const from = document.getElementById('converterFrom').value;
+            const to = document.getElementById('converterTo').value;
+
+            if (!amount) {
+                showNotification('error', 'Invalid Amount', 'Please enter a valid amount');
+                return;
+            }
+
+            if (from === to) {
+                document.getElementById('converterResult').value = `${amount.toFixed(2)} ${to}`;
+                return;
+            }
+
+            const rate = exchangeRates[from][to];
+            const result = amount * rate;
+
+            document.getElementById('converterResult').value = `${result.toFixed(2)} ${to}`;
+        }
+
+        function calculateBudget() {
+            const income = parseFloat(document.getElementById('budgetIncome').value);
+            const savingsRate = parseFloat(document.getElementById('budgetSavings').value) || 20;
+
+            if (!income) {
+                showNotification('error', 'Invalid Income', 'Please enter a valid income amount');
+                return;
+            }
+
+            const savings = income * (savingsRate / 100);
+            const remaining = income - savings;
+
+            // Recommended budget allocation (50/30/20 rule)
+            const needs = remaining * 0.5;
+            const wants = remaining * 0.3;
+            const debt = remaining * 0.2;
+
+            document.getElementById('budgetResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Savings (${savingsRate}%):</span>
+                        <span class="font-medium">${currencySymbol}${savings.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Needs (50%):</span>
+                        <span class="font-medium">${currencySymbol}${needs.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Wants (30%):</span>
+                        <span class="font-medium">${currencySymbol}${wants.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Debt (20%):</span>
+                        <span class="font-medium">${currencySymbol}${debt.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateLoan() {
+            const principal = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('loanRate').value);
+            const months = parseInt(document.getElementById('loanTerm').value);
+
+            if (!principal || !annualRate || !months) {
+                showNotification('error', 'Invalid Input', 'Please enter valid loan details');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - principal;
+
+            document.getElementById('loanResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Monthly Payment:</span>
+                        <span class="font-medium">${currencySymbol}${monthlyPayment.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Payment:</span>
+                        <span class="font-medium">${currencySymbol}${totalPayment.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Interest:</span>
+                        <span class="font-medium">${currencySymbol}${totalInterest.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateSavings() {
+            const initial = parseFloat(document.getElementById('savingsAmount').value) || 0;
+            const monthly = parseFloat(document.getElementById('savingsMonthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('savingsRate').value) || 0;
+            const years = parseInt(document.getElementById('savingsYears').value);
+
+            if (!years) {
+                showNotification('error', 'Invalid Input', 'Please enter a valid number of years');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+
+            // Future value of an annuity formula
+            const futureValue = initial * Math.pow(1 + monthlyRate, months) +
+                monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+
+            const totalContributions = initial + (monthly * months);
+            const totalInterest = futureValue - totalContributions;
+
+            document.getElementById('savingsResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Future Value:</span>
+                        <span class="font-medium">${currencySymbol}${futureValue.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Contributions:</span>
+                        <span class="font-medium">${currencySymbol}${totalContributions.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Interest:</span>
+                        <span class="font-medium">${currencySymbol}${totalInterest.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initializeCharts() {
+            // Tag usage chart
+            const tagUsageCtx = document.getElementById('tagUsageChart').getContext('2d');
+            charts.tagUsage = new Chart(tagUsageCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Usage Count',
+                        data: [],
+                        backgroundColor: [],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            const profileMenu = document.getElementById('profileMenu');
+            profileMenu.classList.toggle('active');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            // Clear all local storage
+            localStorage.clear();
+
+            // Show notification
+            showNotification('success', 'Logged Out', 'You have been successfully logged out');
+
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        function showNotification(type, title, message) {
+            const notificationEl = document.getElementById('notification');
+            const iconEl = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            // Set notification type
+            notificationEl.className = `notification ${type}`;
+
+            // Set icon
+            switch (type) {
+                case 'success':
+                    iconEl.className = 'ri-check-line text-xl text-green-600';
+                    break;
+                case 'error':
+                    iconEl.className = 'ri-error-warning-line text-xl text-red-600';
+                    break;
+                case 'info':
+                    iconEl.className = 'ri-information-line text-xl text-blue-600';
+                    break;
+            }
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Show notification
+            notificationEl.classList.add('show');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notificationEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add toggle switch styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .toggle-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+                border-radius: 24px;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+            input:checked + .slider {
+                background-color: var(--primary);
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuContent = document.querySelector('.mobile-menu-content');
+
+            if (!mobileMenuContent.contains(e.target) && !e.target.closest('.md\\:hidden')) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

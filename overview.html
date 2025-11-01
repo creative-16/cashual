@@ -1,0 +1,2648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview - Budget Planner & Expense Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --pastel-blue: #E0E7FF;
+            --pastel-green: #D1FAE5;
+            --pastel-red: #FEE2E2;
+            --pastel-yellow: #FEF3C7;
+            --pastel-purple: #EDE9FE;
+            --pastel-pink: #FCE7F3;
+            --pastel-gray: #F3F4F6;
+            --indian-saffron: #FF9933;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .pastel-card {
+            background: var(--pastel-gray);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .pastel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-outline {
+            background: var(--pastel-gray);
+            border: 2px solid var(--gray);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--pastel-blue);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn i {
+            font-size: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.home {
+            background-color: var(--primary);
+        }
+
+        .nav-btn.home i {
+            color: white;
+        }
+
+        .nav-btn.home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn.overview {
+            background-color: var(--info);
+        }
+
+        .nav-btn.overview i {
+            color: white;
+        }
+
+        .nav-btn.overview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn.accounts {
+            background-color: var(--secondary);
+        }
+
+        .nav-btn.accounts i {
+            color: white;
+        }
+
+        .nav-btn.accounts:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .nav-btn.budget {
+            background-color: var(--warning);
+        }
+
+        .nav-btn.budget i {
+            color: white;
+        }
+
+        .nav-btn.budget:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .nav-btn.settings {
+            background-color: var(--gray);
+        }
+
+        .nav-btn.settings i {
+            color: white;
+        }
+
+        .nav-btn.settings:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .nav-btn.profile {
+            background-color: var(--purple);
+        }
+
+        .nav-btn.profile i {
+            color: white;
+        }
+
+        .nav-btn.profile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .stat-card.income {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+        }
+
+        .stat-card.expense {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .stat-card.monthly {
+            background: linear-gradient(135deg, var(--indian-saffron) 0%, #FF7E5F 100%);
+        }
+
+        .stat-card.savings {
+            background: linear-gradient(135deg, var(--purple) 0%, #7C3AED 100%);
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--pastel-gray);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transaction-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .transaction-item:hover::before {
+            left: 100%;
+        }
+
+        .transaction-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .transaction-item.income {
+            border-left-color: var(--secondary);
+            background: var(--pastel-green);
+        }
+
+        .transaction-item.expense {
+            border-left-color: var(--danger);
+            background: var(--pastel-red);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .pie-chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary) 0%, #059669 100%);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, var(--warning) 0%, #D97706 100%);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .progress-fill.success {
+            background: linear-gradient(90deg, var(--secondary) 0%, #059669 100%);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(-400px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            max-width: 400px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification.hide {
+            transform: translateX(-400px);
+            opacity: 0;
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 10px;
+            margin-top: 8px;
+            min-width: 180px;
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .profile-menu-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .profile-menu-item i {
+            font-size: 18px;
+        }
+
+        .profile-menu-item.username {
+            font-weight: 600;
+            color: var(--primary);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .profile-menu-item.username:hover {
+            background: transparent;
+        }
+
+        .profile-menu-item.logout {
+            color: var(--danger);
+        }
+
+        .profile-menu-item.logout:hover {
+            background: var(--pastel-red);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: white;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active .mobile-menu-content {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .mobile-menu-item i {
+            font-size: 20px;
+        }
+
+        .mobile-menu-item.home {
+            color: var(--primary);
+        }
+
+        .mobile-menu-item.overview {
+            color: var(--info);
+        }
+
+        .mobile-menu-item.accounts {
+            color: var(--secondary);
+        }
+
+        .mobile-menu-item.budget {
+            color: var(--warning);
+        }
+
+        .mobile-menu-item.settings {
+            color: var(--gray);
+        }
+
+        .mobile-menu-item.profile {
+            color: var(--purple);
+        }
+
+        .mobile-menu-item.logout {
+            color: var(--danger);
+        }
+
+        .goal-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+        }
+
+        .goal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .goal-card.completed::before {
+            background: linear-gradient(90deg, var(--secondary) 0%, #059669 100%);
+        }
+
+        .goal-card.urgent::before {
+            background: linear-gradient(90deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .goal-type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .goal-type-btn {
+            padding: 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .goal-type-btn:hover {
+            border-color: var(--primary);
+            background: var(--pastel-blue);
+        }
+
+        .goal-type-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .goal-type-btn i {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .suggested-goals {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .suggested-goal {
+            padding: 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .suggested-goal:hover {
+            border-color: var(--primary);
+            background: var(--pastel-blue);
+            transform: translateY(-2px);
+        }
+
+        .suggested-goal i {
+            display: block;
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .suggested-goal h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .suggested-goal p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Enhanced Loading Animations */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Interactive Skeleton Cards */
+        .skeleton-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .skeleton-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .skeleton-card:hover::before {
+            left: 100%;
+        }
+
+        .skeleton-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Interactive Skeleton Stats */
+        .skeleton-stat {
+            height: 120px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .skeleton-stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.1;
+            border-radius: 16px;
+        }
+
+        .skeleton-stat::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+
+        /* Interactive Skeleton Chart */
+        .skeleton-chart {
+            height: 300px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-chart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .skeleton-chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            opacity: 0.3;
+            border-radius: 20px;
+        }
+
+        .skeleton-chart::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            background-size: 200% 100%;
+            animation: wave 1.5s infinite;
+        }
+
+        @keyframes wave {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* Interactive Skeleton Insight */
+        .skeleton-insight {
+            height: 100px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-insight:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .skeleton-insight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            opacity: 0.3;
+            border-radius: 16px;
+        }
+
+        .skeleton-insight::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+
+        /* Interactive Skeleton Goal */
+        .skeleton-goal {
+            height: 150px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-goal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .skeleton-goal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            opacity: 0.3;
+            border-radius: 16px;
+        }
+
+        .skeleton-goal::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+            animation: progress 2s infinite;
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 70%;
+            }
+
+            100% {
+                width: 0%;
+            }
+        }
+
+        /* Interactive Skeleton Transaction */
+        .skeleton-transaction {
+            height: 70px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-transaction:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .skeleton-transaction::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--pastel-gray);
+            opacity: 0.3;
+            border-radius: 12px;
+        }
+
+        .skeleton-transaction::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: slide 1.5s infinite;
+        }
+
+        @keyframes slide {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Floating Dots Animation */
+        .floating-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        /* Interactive Loading Card */
+        .loading-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+        }
+
+        .loading-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .loading-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        .loading-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation: pulse 2s infinite;
+        }
+
+        /* Interactive Loading Text */
+        .loading-text {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 10px;
+            animation: fade 1.5s infinite;
+        }
+
+        @keyframes fade {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Interactive Loading Icon */
+        .loading-icon {
+            font-size: 24px;
+            color: var(--primary);
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Interactive Loading Progress */
+        .loading-progress {
+            width: 100%;
+            height: 4px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .loading-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+            animation: progress 2s infinite;
+            border-radius: 10px;
+        }
+
+        /* Interactive Loading Skeleton with Content */
+        .skeleton-with-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skeleton-with-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .skeleton-with-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: slide 1.5s infinite;
+        }
+
+        .skeleton-with-content::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        .skeleton-with-content .skeleton-header {
+            height: 20px;
+            width: 60%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .skeleton-with-content .skeleton-line {
+            height: 14px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-with-content .skeleton-line.short {
+            width: 80%;
+        }
+
+        .skeleton-with-content .skeleton-line.medium {
+            width: 60%;
+        }
+
+        .skeleton-with-content .skeleton-line.long {
+            width: 90%;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+
+            .glass-card,
+            .pastel-card {
+                padding: 16px;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .nav-btn i {
+                font-size: 24px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .goal-type-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .suggested-goals {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <h2 class="text-xl font-bold">Menu</h2>
+                <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="mobile-menu-item home" onclick="navigateTo('home.html')">
+                <i class="ri-home-4-line"></i>
+                <span>Home</span>
+            </div>
+            <div class="mobile-menu-item overview" onclick="navigateTo('overview.html')">
+                <i class="ri-dashboard-line"></i>
+                <span>Overview</span>
+            </div>
+            <div class="mobile-menu-item accounts" onclick="navigateTo('accounts.html')">
+                <i class="ri-wallet-line"></i>
+                <span>Accounts</span>
+            </div>
+            <div class="mobile-menu-item budget" onclick="navigateTo('budget.html')">
+                <i class="ri-pie-chart-line"></i>
+                <span>Budget</span>
+            </div>
+            <div class="mobile-menu-item settings" onclick="navigateTo('settings.html')">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </div>
+            <div class="mobile-menu-item profile" onclick="navigateTo('profile.html')">
+                <i class="ri-user-3-line"></i>
+                <span>Profile</span>
+            </div>
+            <div class="mobile-menu-item logout" onclick="handleLogout()">
+                <i class="ri-logout-box-line"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="nav-container">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="ri-menu-line text-2xl text-gray-700"></i>
+                </button>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: #3B82F6;">
+                    <i class="ri-dashboard-line text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Overview
+                    </h1>
+                    <p class="text-sm text-gray-600">Monitor Transactions</p>
+                </div>
+            </div>
+            <div class="desktop-nav flex items-center gap-4">
+                <button class="nav-btn home" onclick="navigateTo('home.html')" title="Home">
+                    <i class="ri-home-4-line"></i>
+                </button>
+                <button class="nav-btn overview" onclick="navigateTo('overview.html')" title="Overview">
+                    <i class="ri-dashboard-line"></i>
+                </button>
+                <button class="nav-btn accounts" onclick="navigateTo('accounts.html')" title="Accounts">
+                    <i class="ri-wallet-line"></i>
+                </button>
+                <button class="nav-btn budget" onclick="navigateTo('budget.html')" title="Budget">
+                    <i class="ri-pie-chart-line"></i>
+                </button>
+                <button class="nav-btn settings" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="nav-btn profile" title="Profile" onclick="toggleProfileMenu(event)">
+                        <i class="ri-user-3-line"></i>
+                    </button>
+                    <div id="profileMenu" class="profile-menu">
+                        <a href="profile.html">
+                            <div class="profile-menu-item username">
+                                <i class="ri-user-line"></i>
+                                <span id="profileUsername">Username</span>
+                            </div>
+                        </a>
+                        <div class="profile-menu-item logout" onclick="handleLogout(event)">
+                            <i class="ri-logout-box-line"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Stats Overview -->
+        <div id="statsSection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Stats will be loaded here -->
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div id="incomeExpenseChartSection" class="glass-card">
+                <h3 class="text-xl font-bold mb-4">Income vs Expenses</h3>
+                <div class="chart-container">
+                    <canvas id="incomeExpenseChart"></canvas>
+                </div>
+            </div>
+            <div id="spendingTrendChartSection" class="glass-card">
+                <h3 class="text-xl font-bold mb-4">Spending Trend</h3>
+                <div class="chart-container">
+                    <canvas id="spendingTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Insights Section -->
+        <div id="insightsSection" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Insights will be loaded here -->
+        </div>
+
+        <!-- Goals Section -->
+        <div id="goalsSection" class="glass-card mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Financial Goals</h3>
+                <button id="addGoalBtn" class="btn btn-primary">
+                    <i class="ri-add-line"></i> Add Goal
+                </button>
+            </div>
+            <div id="goalsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Goals will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Recent Transactions Section -->
+        <div id="transactionsSection" class="glass-card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Recent Transactions</h3>
+                <button class="btn btn-outline" onclick="navigateTo('home.html')">
+                    <i class="ri-eye-line"></i> View All
+                </button>
+            </div>
+            <div id="recentTransactions" class="space-y-2">
+                <!-- Recent transactions will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Goal Modal -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Set Financial Goal</h3>
+                <button id="closeGoalModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+
+            <form id="goalForm" class="space-y-4">
+                <!-- Goal Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">Choose Goal Type</label>
+                    <div class="goal-type-selector">
+                        <button type="button" class="goal-type-btn active" data-type="custom">
+                            <i class="ri-edit-line"></i>
+                            Custom
+                        </button>
+                        <button type="button" class="goal-type-btn" data-type="emergency">
+                            <i class="ri-shield-check-line"></i>
+                            Emergency
+                        </button>
+                        <button type="button" class="goal-type-btn" data-type="retirement">
+                            <i class="ri-sun-line"></i>
+                            Retirement
+                        </button>
+                        <button type="button" class="goal-type-btn" data-type="vacation">
+                            <i class="ri-plane-line"></i>
+                            Vacation
+                        </button>
+                        <button type="button" class="goal-type-btn" data-type="education">
+                            <i class="ri-graduation-cap-line"></i>
+                            Education
+                        </button>
+                        <button type="button" class="goal-type-btn" data-type="home">
+                            <i class="ri-home-line"></i>
+                            Home
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Suggested Goals -->
+                <div id="suggestedGoals" class="form-group" style="display: none;">
+                    <label class="form-label">Suggested Goals</label>
+                    <div class="suggested-goals">
+                        <div class="suggested-goal" data-suggested="emergency-3months">
+                            <i class="ri-shield-check-line"></i>
+                            <h4>3-Month Emergency</h4>
+                            <p>3 months of expenses</p>
+                        </div>
+                        <div class="suggested-goal" data-suggested="emergency-6months">
+                            <i class="ri-shield-check-line"></i>
+                            <h4>6-Month Emergency</h4>
+                            <p>6 months of expenses</p>
+                        </div>
+                        <div class="suggested-goal" data-suggested="vacation-basic">
+                            <i class="ri-plane-line"></i>
+                            <h4>Basic Vacation</h4>
+                            <p>₹50,000 for travel</p>
+                        </div>
+                        <div class="suggested-goal" data-suggested="vacation-luxury">
+                            <i class="ri-plane-line"></i>
+                            <h4>Luxury Vacation</h4>
+                            <p>₹200,000 for travel</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Goal Fields -->
+                <div id="customGoalFields">
+                    <div class="form-group">
+                        <label class="form-label">Goal Name</label>
+                        <input type="text" id="goalName" class="input" placeholder="e.g., Emergency Fund" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Target Amount</label>
+                        <input type="number" id="goalTarget" class="input" placeholder="0.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Current Amount (Optional)</label>
+                        <input type="number" id="goalCurrent" class="input" placeholder="0.00" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Target Date</label>
+                        <input type="text" id="goalDate" class="input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Monthly Contribution (Optional)</label>
+                        <input type="number" id="goalMonthly" class="input" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-1">
+                        <i class="ri-save-line"></i> Save Goal
+                    </button>
+                    <button type="button" id="cancelGoal" class="btn btn-outline flex-1">
+                        <i class="ri-close-line"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i id="notificationIcon" class="ri-check-line text-xl"></i>
+        <div>
+            <p id="notificationTitle" class="font-medium"></p>
+            <p id="notificationMessage" class="text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3HbtBbtcGf8b54DzlLfatJ_Xfdum-yqA",
+            authDomain: "budget-ce802.firebaseapp.com",
+            databaseURL: "https://budget-ce802-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "budget-ce802",
+            storageBucket: "budget-ce802.firebasestorage.app",
+            messagingSenderId: "346208284823",
+            appId: "1:346208284823:web:c580812cce390463e3f9d2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        // Global variables
+        let transactions = [];
+        let tags = [];
+        let accounts = [];
+        let budgets = [];
+        let goals = [];
+        let charts = {};
+        let currencySymbol = '₹';
+        let defaultAccountId = '';
+        let userId = '';
+        let username = '';
+        let selectedGoalType = 'custom';
+        let dataLoaded = false;
+        let isLoading = false;
+        let notificationTimeout = null;
+        let sectionLoadingStates = {
+            stats: false,
+            charts: false,
+            insights: false,
+            goals: false,
+            transactions: false
+        };
+
+        // Initialize date pickers
+        flatpickr("#goalDate", {
+            dateFormat: "Y-m-d",
+            minDate: "today"
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            initializeApp();
+            setupEventListeners();
+            loadInitialData();
+        });
+
+        function checkAuthStatus() {
+            userId = localStorage.getItem('userId');
+            username = localStorage.getItem('username');
+
+            if (!userId || !username) {
+                // User is not logged in, redirect to login page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update username display
+            document.getElementById('profileUsername').textContent = username;
+        }
+
+        function initializeApp() {
+            // Initialize charts
+            initializeCharts();
+
+            // Show interactive skeleton loaders for all sections
+            showInteractiveSkeletonLoaders();
+        }
+
+        function setupEventListeners() {
+            // Goal modal
+            document.getElementById('addGoalBtn').addEventListener('click', () => {
+                document.getElementById('goalModal').classList.add('active');
+            });
+
+            document.getElementById('closeGoalModal').addEventListener('click', () => {
+                document.getElementById('goalModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelGoal').addEventListener('click', () => {
+                document.getElementById('goalModal').classList.remove('active');
+            });
+
+            document.getElementById('goalForm').addEventListener('submit', handleGoalSubmit);
+
+            // Goal type selection
+            document.querySelectorAll('.goal-type-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.goal-type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedGoalType = btn.dataset.type;
+
+                    // Show/hide suggested goals
+                    const suggestedGoals = document.getElementById('suggestedGoals');
+                    const customFields = document.getElementById('customGoalFields');
+
+                    if (selectedGoalType === 'custom') {
+                        suggestedGoals.style.display = 'none';
+                        customFields.style.display = 'block';
+                    } else {
+                        suggestedGoals.style.display = 'block';
+                        customFields.style.display = 'none';
+                    }
+                });
+            });
+
+            // Suggested goals selection
+            document.querySelectorAll('.suggested-goal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const suggestedType = btn.dataset.suggested;
+                    setSuggestedGoal(suggestedType);
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const mobileMenu = document.getElementById('mobileMenu');
+                const mobileMenuContent = document.querySelector('.mobile-menu-content');
+
+                if (!mobileMenuContent.contains(e.target) && !e.target.closest('.md\\:hidden')) {
+                    mobileMenu.classList.remove('active');
+                }
+
+                // Close profile menu when clicking outside
+                const profileDropdown = document.querySelector('.profile-dropdown');
+                const profileMenu = document.getElementById('profileMenu');
+
+                if (!profileDropdown.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+            });
+        }
+
+        function setSuggestedGoal(type) {
+            const today = new Date();
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            monthStart.setHours(0, 0, 0, 0);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            monthEnd.setHours(23, 59, 59, 999);
+
+            // Calculate monthly expenses
+            let monthlyExpenses = 0;
+            transactions.forEach(tx => {
+                if (tx.type === 'expense' && tx.timestamp >= monthStart.getTime() && tx.timestamp <= monthEnd.getTime()) {
+                    monthlyExpenses += tx.amount;
+                }
+            });
+
+            let goalName = '';
+            let targetAmount = 0;
+            let targetDate = new Date();
+
+            switch (type) {
+                case 'emergency-3months':
+                    goalName = '3-Month Emergency Fund';
+                    targetAmount = monthlyExpenses * 3;
+                    targetDate.setMonth(targetDate.getMonth() + 12);
+                    break;
+                case 'emergency-6months':
+                    goalName = '6-Month Emergency Fund';
+                    targetAmount = monthlyExpenses * 6;
+                    targetDate.setMonth(targetDate.getMonth() + 18);
+                    break;
+                case 'vacation-basic':
+                    goalName = 'Basic Vacation Fund';
+                    targetAmount = 50000;
+                    targetDate.setMonth(targetDate.getMonth() + 6);
+                    break;
+                case 'vacation-luxury':
+                    goalName = 'Luxury Vacation Fund';
+                    targetAmount = 200000;
+                    targetDate.setMonth(targetDate.getMonth() + 12);
+                    break;
+            }
+
+            // Calculate monthly contribution
+            const monthsDiff = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24 * 30));
+            const monthlyContribution = targetAmount / monthsDiff;
+
+            // Fill the form
+            document.getElementById('goalName').value = goalName;
+            document.getElementById('goalTarget').value = targetAmount.toFixed(2);
+            document.getElementById('goalCurrent').value = '0';
+            document.getElementById('goalDate').value = targetDate.toISOString().slice(0, 10);
+            document.getElementById('goalMonthly').value = monthlyContribution.toFixed(2);
+
+            // Show custom fields
+            document.getElementById('customGoalFields').style.display = 'block';
+        }
+
+        function showInteractiveSkeletonLoaders() {
+            // Show interactive skeleton for stats
+            const statsSection = document.getElementById('statsSection');
+            statsSection.innerHTML = '';
+
+            for (let i = 0; i < 4; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton-stat';
+                skeleton.innerHTML = `
+                    <div class="loading-card">
+                        <i class="ri-bar-chart-2-line loading-icon"></i>
+                        <div class="loading-text">Loading financial data...</div>
+                        <div class="loading-progress">
+                            <div class="loading-progress-fill"></div>
+                        </div>
+                    </div>
+                `;
+                statsSection.appendChild(skeleton);
+            }
+
+            // Show interactive skeleton for insights
+            const insightsSection = document.getElementById('insightsSection');
+            insightsSection.innerHTML = '';
+
+            for (let i = 0; i < 3; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton-insight';
+                skeleton.innerHTML = `
+                    <div class="loading-card">
+                        <i class="ri-lightbulb-line loading-icon"></i>
+                        <div class="loading-text">Analyzing spending patterns...</div>
+                        <div class="floating-dots">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                `;
+                insightsSection.appendChild(skeleton);
+            }
+
+            // Show interactive skeleton for goals
+            const goalsList = document.getElementById('goalsList');
+            goalsList.innerHTML = '';
+
+            for (let i = 0; i < 3; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton-goal';
+                skeleton.innerHTML = `
+                    <div class="skeleton-with-content">
+                        <div class="skeleton-header"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="loading-progress">
+                            <div class="loading-progress-fill"></div>
+                        </div>
+                    </div>
+                `;
+                goalsList.appendChild(skeleton);
+            }
+
+            // Show interactive skeleton for transactions
+            const transactionsContainer = document.getElementById('recentTransactions');
+            transactionsContainer.innerHTML = '';
+
+            for (let i = 0; i < 5; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton-transaction';
+                skeleton.innerHTML = `
+                    <div class="skeleton-with-content">
+                        <div class="skeleton-header"></div>
+                        <div class="skeleton-line"></div>
+                    </div>
+                `;
+                transactionsContainer.appendChild(skeleton);
+            }
+        }
+
+        function showSectionLoader(section) {
+            sectionLoadingStates[section] = true;
+
+            switch (section) {
+                case 'stats':
+                    // Stats already showing interactive skeleton
+                    break;
+                case 'charts':
+                    // Charts will show empty until data is loaded
+                    break;
+                case 'insights':
+                    // Insights already showing interactive skeleton
+                    break;
+                case 'goals':
+                    // Goals already showing interactive skeleton
+                    break;
+                case 'transactions':
+                    // Transactions already showing interactive skeleton
+                    break;
+            }
+        }
+
+        function hideSectionLoader(section) {
+            sectionLoadingStates[section] = false;
+        }
+
+        async function loadInitialData() {
+            // Prevent multiple simultaneous loads
+            if (isLoading || dataLoaded) {
+                return;
+            }
+
+            // Set loading state
+            isLoading = true;
+
+            try {
+                // Load data from Firebase
+                const snapshot = await db.ref(`users/${userId}/data`).once('value');
+                const data = snapshot.val() || {};
+
+                // Load preferences
+                if (data.preferences) {
+                    currencySymbol = data.preferences.currency === 'USD' ? '$' :
+                        data.preferences.currency === 'EUR' ? '€' :
+                            data.preferences.currency === 'GBP' ? '£' :
+                                data.preferences.currency === 'JPY' ? '¥' : '₹';
+                    defaultAccountId = data.preferences.defaultAccount || '';
+                }
+
+                // Load tags
+                if (data.tags) {
+                    tags = Object.keys(data.tags).map(id => ({ id, ...data.tags[id] }));
+                }
+
+                // Load accounts
+                if (data.accounts) {
+                    accounts = Object.keys(data.accounts).map(id => ({ id, ...data.accounts[id] }));
+                }
+
+                // Load transactions
+                if (data.transactions) {
+                    transactions = Object.keys(data.transactions).map(id => ({ id, ...data.transactions[id] }));
+                    transactions.sort((a, b) => b.timestamp - a.timestamp);
+                }
+
+                // Load budgets
+                if (data.budgets) {
+                    budgets = Object.keys(data.budgets).map(id => ({ id, ...data.budgets[id] }));
+                }
+
+                // Load goals
+                if (data.goals) {
+                    goals = Object.keys(data.goals).map(id => ({ id, ...data.goals[id] }));
+                }
+
+                // Update UI
+                updateDashboard();
+                renderAllViews();
+
+                // Set up real-time listeners
+                setupRealtimeListeners();
+
+                // Mark data as loaded
+                dataLoaded = true;
+
+                // Show success notification
+                showNotification('success', 'Welcome Back!', 'Your financial data has been loaded successfully');
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showNotification('error', 'Loading Error', 'Failed to load data. Please refresh the page.');
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function setupRealtimeListeners() {
+            // Listen for transactions changes
+            db.ref(`users/${userId}/data/transactions`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                transactions = Object.keys(data).map(id => ({ id, ...data[id] }));
+                transactions.sort((a, b) => b.timestamp - a.timestamp);
+
+                updateDashboard();
+                renderAllViews();
+            });
+
+            // Listen for goals changes
+            db.ref(`users/${userId}/data/goals`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                goals = Object.keys(data).map(id => ({ id, ...data[id] }));
+                renderGoals();
+            });
+        }
+
+        function updateDashboard() {
+            // Show loader for stats
+            showSectionLoader('stats');
+
+            // Calculate current balance
+            let balance = 0;
+            transactions.forEach(tx => {
+                if (tx.type === 'income') {
+                    balance += tx.amount;
+                } else {
+                    balance -= tx.amount;
+                }
+            });
+
+            // Calculate monthly totals
+            const today = new Date();
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            monthStart.setHours(0, 0, 0, 0);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            monthEnd.setHours(23, 59, 59, 999);
+
+            let monthlyIncome = 0;
+            let monthlyExpense = 0;
+
+            transactions.forEach(tx => {
+                if (tx.timestamp >= monthStart.getTime() && tx.timestamp <= monthEnd.getTime()) {
+                    if (tx.type === 'income') {
+                        monthlyIncome += tx.amount;
+                    } else {
+                        monthlyExpense += tx.amount;
+                    }
+                }
+            });
+
+            // Calculate savings rate
+            const savingsRate = monthlyIncome > 0 ? Math.round((monthlyIncome - monthlyExpense) / monthlyIncome * 100) : 0;
+
+            // Update UI
+            const statsSection = document.getElementById('statsSection');
+            statsSection.innerHTML = `
+                <div class="stat-card">
+                    <div class="relative z-10">
+                        <p class="text-white/80 text-sm mb-1">Current Balance</p>
+                        <p class="text-3xl font-bold" id="currentBalance">${currencySymbol}${balance.toFixed(2)}</p>
+                        <p class="text-white/60 text-xs mt-2">Updated just now</p>
+                    </div>
+                </div>
+                <div class="stat-card income">
+                    <div class="relative z-10">
+                        <p class="text-white/80 text-sm mb-1">Total Income</p>
+                        <p class="text-3xl font-bold" id="totalIncome">${currencySymbol}${monthlyIncome.toFixed(2)}</p>
+                        <p class="text-white/60 text-xs mt-2">This month</p>
+                    </div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="relative z-10">
+                        <p class="text-white/80 text-sm mb-1">Total Expenses</p>
+                        <p class="text-3xl font-bold" id="totalExpense">${currencySymbol}${monthlyExpense.toFixed(2)}</p>
+                        <p class="text-white/60 text-xs mt-2">This month</p>
+                    </div>
+                </div>
+                <div class="stat-card savings">
+                    <div class="relative z-10">
+                        <p class="text-white/80 text-sm mb-1">Savings Rate</p>
+                        <p class="text-3xl font-bold" id="savingsRate">${savingsRate}%</p>
+                        <p class="text-white/60 text-xs mt-2">This month</p>
+                    </div>
+                </div>
+            `;
+
+            hideSectionLoader('stats');
+
+            // Update charts
+            updateCharts(monthlyIncome, monthlyExpense);
+
+            // Update financial insights
+            updateFinancialInsights(monthlyIncome, monthlyExpense);
+        }
+
+        function updateCharts(monthlyIncome, monthlyExpense) {
+            // Show loader for charts
+            showSectionLoader('charts');
+
+            // Update income vs expense chart
+            if (charts.incomeExpense) {
+                charts.incomeExpense.data.datasets[0].data = [monthlyIncome, monthlyExpense];
+                charts.incomeExpense.update();
+            }
+
+            // Update spending trend chart (last 7 days)
+            const today = new Date();
+            const last7Days = [];
+            const spendingData = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                date.setHours(0, 0, 0, 0);
+                const nextDay = new Date(date);
+                nextDay.setDate(nextDay.getDate() + 1);
+
+                const daySpending = transactions
+                    .filter(tx => tx.type === 'expense' &&
+                        tx.timestamp >= date.getTime() &&
+                        tx.timestamp < nextDay.getTime())
+                    .reduce((sum, tx) => sum + tx.amount, 0);
+
+                last7Days.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                spendingData.push(daySpending);
+            }
+
+            if (charts.spendingTrend) {
+                charts.spendingTrend.data.labels = last7Days;
+                charts.spendingTrend.data.datasets[0].data = spendingData;
+                charts.spendingTrend.update();
+            }
+
+            hideSectionLoader('charts');
+        }
+
+        function updateFinancialInsights(monthlyIncome, monthlyExpense) {
+            // Show loader for insights
+            showSectionLoader('insights');
+
+            // Calculate top spending category
+            const today = new Date();
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            monthStart.setHours(0, 0, 0, 0);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            monthEnd.setHours(23, 59, 59, 999);
+
+            const categoryTotals = {};
+            transactions.forEach(tx => {
+                if (tx.type === 'expense' && tx.timestamp >= monthStart.getTime() && tx.timestamp <= monthEnd.getTime()) {
+                    const tag = tags.find(t => t.id === tx.tagId);
+                    const categoryName = tag?.name || 'Unknown';
+
+                    if (!categoryTotals[categoryName]) {
+                        categoryTotals[categoryName] = { amount: 0, color: tag?.color || '#6B7280' };
+                    }
+
+                    categoryTotals[categoryName].amount += tx.amount;
+                }
+            });
+
+            const sortedCategories = Object.entries(categoryTotals)
+                .sort((a, b) => b[1].amount - a[1].amount);
+
+            // Calculate top income source
+            const incomeTotals = {};
+            transactions.forEach(tx => {
+                if (tx.type === 'income' && tx.timestamp >= monthStart.getTime() && tx.timestamp <= monthEnd.getTime()) {
+                    const tag = tags.find(t => t.id === tx.tagId);
+                    const categoryName = tag?.name || 'Unknown';
+
+                    if (!incomeTotals[categoryName]) {
+                        incomeTotals[categoryName] = { amount: 0, color: tag?.color || '#6B7280' };
+                    }
+
+                    incomeTotals[categoryName].amount += tx.amount;
+                }
+            });
+
+            const sortedIncome = Object.entries(incomeTotals)
+                .sort((a, b) => b[1].amount - a[1].amount);
+
+            // Calculate financial health score
+            let healthScore = 50; // Base score
+
+            // Factor in savings rate
+            const savingsRate = monthlyIncome > 0 ? (monthlyIncome - monthlyExpense) / monthlyIncome : 0;
+            if (savingsRate > 0.2) healthScore += 20;
+            else if (savingsRate > 0.1) healthScore += 10;
+            else if (savingsRate < 0) healthScore -= 20;
+
+            // Factor in budget adherence
+            let budgetAdherence = 0;
+            let totalBudget = 0;
+            let totalSpent = 0;
+
+            budgets.forEach(budget => {
+                const tag = tags.find(t => t.id === budget.tagId);
+                if (tag) {
+                    let spent = 0;
+                    transactions.forEach(tx => {
+                        if (tx.type === 'expense' && tx.tagId === budget.tagId &&
+                            tx.timestamp >= monthStart.getTime() && tx.timestamp <= monthEnd.getTime()) {
+                            spent += tx.amount;
+                        }
+                    });
+
+                    totalBudget += budget.amount;
+                    totalSpent += spent;
+                }
+            });
+
+            if (totalBudget > 0) {
+                budgetAdherence = 1 - (totalSpent - totalBudget) / totalBudget;
+                if (budgetAdherence > 0.9) healthScore += 15;
+                else if (budgetAdherence > 0.7) healthScore += 5;
+                else if (budgetAdherence < 0.5) healthScore -= 15;
+            }
+
+            // Ensure score is within 0-100 range
+            healthScore = Math.max(0, Math.min(100, Math.round(healthScore)));
+
+            // Update health score display
+            let healthStatus = 'Poor';
+            let healthColor = 'text-red-500';
+
+            if (healthScore >= 80) {
+                healthStatus = 'Excellent';
+                healthColor = 'text-green-500';
+            } else if (healthScore >= 60) {
+                healthStatus = 'Good';
+                healthColor = 'text-green-500';
+            } else if (healthScore >= 40) {
+                healthStatus = 'Fair';
+                healthColor = 'text-yellow-500';
+            } else if (healthScore >= 20) {
+                healthStatus = 'Poor';
+                healthColor = 'text-orange-500';
+            } else {
+                healthStatus = 'Critical';
+                healthColor = 'text-red-500';
+            }
+
+            // Update UI
+            const insightsSection = document.getElementById('insightsSection');
+            insightsSection.innerHTML = `
+                <div class="insight-card">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i class="ri-lightbulb-line text-yellow-500"></i>
+                        Top Spending Category
+                    </h3>
+                    <div id="topCategory" class="flex items-center justify-between">
+                        ${sortedCategories.length > 0 ? `
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full" style="background-color: ${sortedCategories[0][1].color}"></div>
+                                <span>${sortedCategories[0][0]}</span>
+                            </div>
+                            <span class="font-bold">${currencySymbol}${sortedCategories[0][1].amount.toFixed(2)}</span>
+                        ` : '<span class="text-gray-600">No data available</span>'}
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i class="ri-trending-up-line text-green-500"></i>
+                        Highest Income Source
+                    </h3>
+                    <div id="topIncomeSource" class="flex items-center justify-between">
+                        ${sortedIncome.length > 0 ? `
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full" style="background-color: ${sortedIncome[0][1].color}"></div>
+                                <span>${sortedIncome[0][0]}</span>
+                            </div>
+                            <span class="font-bold">${currencySymbol}${sortedIncome[0][1].amount.toFixed(2)}</span>
+                        ` : '<span class="text-gray-600">No data available</span>'}
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i class="ri-calendar-check-line text-blue-500"></i>
+                        Financial Health Score
+                    </h3>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span id="healthScore" class="text-2xl font-bold ${healthColor}">${healthStatus}</span>
+                        </div>
+                        <span id="healthScoreValue" class="text-sm text-gray-600">${healthScore}/100</span>
+                    </div>
+                </div>
+            `;
+
+            hideSectionLoader('insights');
+        }
+
+        function initializeCharts() {
+            // Income vs expense chart
+            const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
+            charts.incomeExpense = new Chart(incomeExpenseCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Income', 'Expenses'],
+                    datasets: [{
+                        label: 'Amount',
+                        data: [0, 0],
+                        backgroundColor: ['#10B981', '#EF4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => currencySymbol + value
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Spending trend chart
+            const spendingCtx = document.getElementById('spendingTrendChart').getContext('2d');
+            charts.spendingTrend = new Chart(spendingCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Spending',
+                        data: [],
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => currencySymbol + value
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderAllViews() {
+            renderGoals();
+            renderRecentTransactions();
+        }
+
+        function renderGoals() {
+            // Show loader for goals
+            showSectionLoader('goals');
+
+            const container = document.getElementById('goalsList');
+            container.innerHTML = '';
+
+            if (goals.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-3">No financial goals set yet. Click "Add Goal" to get started!</p>';
+                hideSectionLoader('goals');
+                return;
+            }
+
+            goals.forEach(goal => {
+                const progress = goal.target > 0 ? (goal.current / goal.target) * 100 : 0;
+                const targetDate = new Date(goal.targetDate);
+                const today = new Date();
+                const daysLeft = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+
+                let progressClass = 'progress-fill';
+                let cardClass = 'goal-card';
+
+                if (progress >= 100) {
+                    progressClass += ' success';
+                    cardClass += ' completed';
+                } else if (progress > 80) {
+                    progressClass += ' warning';
+                } else if (daysLeft < 30 && progress < 50) {
+                    progressClass += ' danger';
+                    cardClass += ' urgent';
+                }
+
+                const goalCard = document.createElement('div');
+                goalCard.className = cardClass;
+                goalCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold">${goal.name}</h4>
+                        <div class="flex gap-2">
+                            ${goal.monthlyContribution ? `<span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">${currencySymbol}${goal.monthlyContribution}/mo</span>` : ''}
+                            <button class="text-red-500 hover:text-red-700" onclick="deleteGoal('${goal.id}')">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Progress: ${currencySymbol}${goal.current.toFixed(2)} / ${currencySymbol}${goal.target.toFixed(2)}</span>
+                            <span class="text-gray-600">${progress.toFixed(0)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="${progressClass}" style="width: ${Math.min(progress, 100)}%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Days left: <span class="${daysLeft < 30 ? 'text-red-600' : 'text-green-600'} font-bold">${daysLeft}</span></span>
+                        <span class="text-gray-600">Target: ${targetDate.toLocaleDateString()}</span>
+                    </div>
+                    ${goal.monthlyContribution ? `
+                        <div class="mt-2 pt-2 border-t border-gray-200">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-500">Monthly needed: ${currencySymbol}${goal.monthlyContribution}</span>
+                                <span class="text-gray-500">On track: ${progress >= (100 - daysLeft / 30) ? '✓' : '⚠'}</span>
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+                container.appendChild(goalCard);
+            });
+
+            hideSectionLoader('goals');
+        }
+
+        function renderRecentTransactions() {
+            // Show loader for transactions
+            showSectionLoader('transactions');
+
+            const container = document.getElementById('recentTransactions');
+            container.innerHTML = '';
+
+            const recentTx = transactions.slice(0, 5);
+
+            if (recentTx.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">No transactions yet</p>';
+                hideSectionLoader('transactions');
+                return;
+            }
+
+            recentTx.forEach(tx => {
+                const tag = tags.find(t => t.id === tx.tagId);
+                const account = accounts.find(a => a.id === tx.accountId);
+                const date = new Date(tx.timestamp);
+
+                const item = document.createElement('div');
+                item.className = `transaction-item ${tx.type}`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: ${tag?.color || '#6B7280'}20">
+                            <i class="${tx.type === 'income' ? 'ri-arrow-down-line text-green-600' : 'ri-arrow-up-line text-red-600'}"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium">${tag?.name || 'Unknown'}</div>
+                            <div class="text-sm text-gray-500">${date.toLocaleDateString()} • ${tx.note || 'No note'}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold ${tx.type === 'income' ? 'text-green-600' : 'text-red-600'}">
+                            ${tx.type === 'income' ? '+' : '-'}${currencySymbol}${tx.amount.toFixed(2)}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+            hideSectionLoader('transactions');
+        }
+
+        async function handleGoalSubmit(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('goalName').value;
+            const target = parseFloat(document.getElementById('goalTarget').value);
+            const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
+            const targetDate = document.getElementById('goalDate').value;
+            const monthlyContribution = parseFloat(document.getElementById('goalMonthly').value) || 0;
+
+            if (!name || !target || !targetDate) {
+                showNotification('error', 'Missing Information', 'Please fill all required fields');
+                return;
+            }
+
+            const goal = {
+                name,
+                target,
+                current,
+                targetDate: new Date(targetDate).getTime(),
+                monthlyContribution,
+                type: selectedGoalType,
+                createdAt: new Date().getTime()
+            };
+
+            try {
+                const goalId = db.ref().child(`users/${userId}/data/goals`).push().key;
+                await db.ref(`users/${userId}/data/goals/${goalId}`).set(goal);
+
+                showNotification('success', 'Goal Added', 'Your financial goal has been created');
+                document.getElementById('goalForm').reset();
+                document.getElementById('goalModal').classList.remove('active');
+
+                // Reset goal type selection
+                document.querySelectorAll('.goal-type-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.goal-type-btn[data-type="custom"]').classList.add('active');
+                selectedGoalType = 'custom';
+                document.getElementById('suggestedGoals').style.display = 'none';
+                document.getElementById('customGoalFields').style.display = 'block';
+            } catch (error) {
+                showNotification('error', 'Error', 'Failed to save goal. Please try again.');
+            }
+        }
+
+        async function deleteGoal(goalId) {
+            if (!confirm('Are you sure you want to delete this goal?')) return;
+
+            try {
+                await db.ref(`users/${userId}/data/goals/${goalId}`).remove();
+                showNotification('success', 'Goal Deleted', 'The goal has been removed');
+            } catch (error) {
+                showNotification('error', 'Error', 'Failed to delete goal. Please try again.');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            const profileMenu = document.getElementById('profileMenu');
+            profileMenu.classList.toggle('active');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function handleLogout(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+
+            // Clear all localStorage data
+            localStorage.clear();
+
+            // Redirect to login page immediately
+            window.location.href = 'index.html';
+        }
+
+        function showNotification(type, title, message) {
+            // Clear any existing timeout
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+
+            const notificationEl = document.getElementById('notification');
+            const iconEl = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            // Set notification type
+            notificationEl.className = `notification ${type}`;
+
+            // Set icon
+            switch (type) {
+                case 'success':
+                    iconEl.className = 'ri-check-line text-xl text-green-600';
+                    break;
+                case 'error':
+                    iconEl.className = 'ri-error-warning-line text-xl text-red-600';
+                    break;
+                case 'info':
+                    iconEl.className = 'ri-information-line text-xl text-blue-600';
+                    break;
+            }
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Show notification
+            notificationEl.classList.add('show');
+            notificationEl.classList.remove('hide');
+
+            // Hide after 3 seconds
+            notificationTimeout = setTimeout(() => {
+                notificationEl.classList.remove('show');
+                notificationEl.classList.add('hide');
+
+                // Remove the hide class after the transition completes
+                setTimeout(() => {
+                    notificationEl.classList.remove('hide');
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

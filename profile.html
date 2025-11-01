@@ -1,0 +1,2873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Budget Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --pastel-blue: #E0E7FF;
+            --pastel-green: #D1FAE5;
+            --pastel-red: #FEE2E2;
+            --pastel-yellow: #FEF3C7;
+            --pastel-purple: #EDE9FE;
+            --pastel-pink: #FCE7F3;
+            --pastel-gray: #F3F4F6;
+            --indian-saffron: #FF9933;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-outline {
+            background: var(--pastel-gray);
+            border: 2px solid var(--gray);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--pastel-blue);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn i {
+            font-size: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.home {
+            background-color: var(--primary);
+        }
+
+        .nav-btn.home i {
+            color: white;
+        }
+
+        .nav-btn.home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn.overview {
+            background-color: var(--info);
+        }
+
+        .nav-btn.overview i {
+            color: white;
+        }
+
+        .nav-btn.overview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn.accounts {
+            background-color: var(--secondary);
+        }
+
+        .nav-btn.accounts i {
+            color: white;
+        }
+
+        .nav-btn.accounts:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .nav-btn.budget {
+            background-color: var(--warning);
+        }
+
+        .nav-btn.budget i {
+            color: white;
+        }
+
+        .nav-btn.budget:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .nav-btn.settings {
+            background-color: var(--gray);
+        }
+
+        .nav-btn.settings i {
+            color: white;
+        }
+
+        .nav-btn.settings:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .nav-btn.profile {
+            background-color: var(--purple);
+        }
+
+        .nav-btn.profile i {
+            color: white;
+        }
+
+        .nav-btn.profile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 10px;
+            margin-top: 8px;
+            min-width: 200px;
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .profile-menu-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .profile-menu-divider {
+            height: 1px;
+            background: #E5E7EB;
+            margin: 5px 0;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: white;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active .mobile-menu-content {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .mobile-menu-item i {
+            font-size: 20px;
+        }
+
+        .mobile-menu-item.home {
+            color: var(--primary);
+        }
+
+        .mobile-menu-item.overview {
+            color: var(--info);
+        }
+
+        .mobile-menu-item.accounts {
+            color: var(--secondary);
+        }
+
+        .mobile-menu-item.budget {
+            color: var(--warning);
+        }
+
+        .mobile-menu-item.settings {
+            color: var(--gray);
+        }
+
+        .mobile-menu-item.profile {
+            color: var(--purple);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .stat-card.income {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+        }
+
+        .stat-card.expense {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .stat-card.balance {
+            background: linear-gradient(135deg, var(--info) 0%, #2563EB 100%);
+        }
+
+        .stat-card.savings {
+            background: linear-gradient(135deg, var(--purple) 0%, #7C3AED 100%);
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .account-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .account-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Loading Animation */
+        .section-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 16px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Custom Image Cropper - COMPLETELY SOLID */
+        .image-cropper-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 99999;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .image-cropper-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cropper-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        .cropper-header {
+            background: #2d2d2d;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+
+        .cropper-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .cropper-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cropper-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .cropper-body {
+            position: relative;
+            padding: 20px;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cropper-canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            background: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #444;
+        }
+
+        .cropper-canvas {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cropper-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .cropper-controls {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cropper-control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cropper-control-label {
+            color: #ccc;
+            font-size: 14px;
+            min-width: 80px;
+        }
+
+        .cropper-slider {
+            flex: 1;
+            height: 6px;
+            background: #444;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .cropper-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #6366f1;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cropper-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #6366f1;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .cropper-value {
+            color: #ccc;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .cropper-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .cropper-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cropper-btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .cropper-btn-primary:hover {
+            background: #4f46e5;
+        }
+
+        .cropper-btn-secondary {
+            background: #444;
+            color: white;
+        }
+
+        .cropper-btn-secondary:hover {
+            background: #555;
+        }
+
+        /* Currency Converter Animation */
+        .currency-converter {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .currency-converter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .currency-converter.converting::after {
+            transform: translateX(100%);
+        }
+
+        .converter-result {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+
+            .glass-card {
+                padding: 16px;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .nav-btn i {
+                font-size: 24px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .cropper-container {
+                width: 95%;
+                max-width: none;
+            }
+
+            .cropper-canvas-container {
+                height: 300px;
+            }
+
+            .cropper-control-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .cropper-control-label {
+                min-width: auto;
+            }
+
+            .cropper-value {
+                min-width: auto;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <h2 class="text-xl font-bold">Menu</h2>
+                <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="mobile-menu-item home" onclick="navigateTo('home.html')">
+                <i class="ri-home-4-line"></i>
+                <span>Home</span>
+            </div>
+            <div class="mobile-menu-item overview" onclick="navigateTo('overview.html')">
+                <i class="ri-dashboard-line"></i>
+                <span>Overview</span>
+            </div>
+            <div class="mobile-menu-item accounts" onclick="navigateTo('accounts.html')">
+                <i class="ri-wallet-line"></i>
+                <span>Accounts</span>
+            </div>
+            <div class="mobile-menu-item budget" onclick="navigateTo('budget.html')">
+                <i class="ri-pie-chart-line"></i>
+                <span>Budget</span>
+            </div>
+            <div class="mobile-menu-item settings" onclick="navigateTo('settings.html')">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </div>
+            <div class="mobile-menu-item profile" onclick="navigateTo('profile.html')">
+                <i class="ri-user-3-line"></i>
+                <span>Profile</span>
+            </div>
+            <div class="mobile-menu-item" onclick="logout()">
+                <i class="ri-logout-box-line"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="nav-container">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="ri-menu-line text-2xl text-gray-700"></i>
+                </button>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: #8B5CF6;">
+                    <i class="ri-user-3-line text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Profile
+                    </h1>
+                    <p class="text-sm text-gray-600">Edit your Profile</p>
+                </div>
+            </div>
+            <div class="desktop-nav flex items-center gap-4">
+                <button class="nav-btn home" onclick="navigateTo('home.html')" title="Home">
+                    <i class="ri-home-4-line"></i>
+                </button>
+                <button class="nav-btn overview" onclick="navigateTo('overview.html')" title="Overview">
+                    <i class="ri-dashboard-line"></i>
+                </button>
+                <button class="nav-btn accounts" onclick="navigateTo('accounts.html')" title="Accounts">
+                    <i class="ri-wallet-line"></i>
+                </button>
+                <button class="nav-btn budget" onclick="navigateTo('budget.html')" title="Budget">
+                    <i class="ri-pie-chart-line"></i>
+                </button>
+                <button class="nav-btn settings" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="nav-btn profile" title="Profile" onclick="toggleProfileMenu(event)">
+                        <i class="ri-user-3-line"></i>
+                    </button>
+                    <div id="profileMenu" class="profile-menu">
+                        <div class="profile-menu-item">
+                            <i class="ri-user-line"></i>
+                            <span id="profileUsername">Username</span>
+                        </div>
+                        <div class="profile-menu-divider"></div>
+                        <div class="profile-menu-item" onclick="navigateTo('home.html')">
+                            <i class="ri-home-4-line"></i>
+                            <span>Home</span>
+                        </div>
+                        <div class="profile-menu-item" onclick="navigateTo('overview.html')">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Overview</span>
+                        </div>
+                        <div class="profile-menu-item" onclick="navigateTo('accounts.html')">
+                            <i class="ri-wallet-line"></i>
+                            <span>Accounts</span>
+                        </div>
+                        <div class="profile-menu-item" onclick="navigateTo('budget.html')">
+                            <i class="ri-pie-chart-line"></i>
+                            <span>Budget</span>
+                        </div>
+                        <div class="profile-menu-item" onclick="navigateTo('settings.html')">
+                            <i class="ri-settings-3-line"></i>
+                            <span>Settings</span>
+                        </div>
+                        <div class="profile-menu-divider"></div>
+                        <div class="profile-menu-item" onclick="logout()">
+                            <i class="ri-logout-box-line"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Profile Section -->
+        <div class="glass-card">
+            <div id="profileSectionLoading" class="section-loading">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading profile information...</p>
+            </div>
+            <div id="profileSectionContent" style="display: none;">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Profile Picture and Basic Info -->
+                    <div class="md:w-1/3">
+                        <div class="text-center">
+                            <div class="avatar-container">
+                                <img id="profileAvatar" src="" alt="Profile" class="avatar">
+                            </div>
+                            <h2 id="profileName" class="text-2xl font-bold mt-4"></h2>
+                            <p id="profileEmail" class="text-gray-600"></p>
+                            <p id="memberSince" class="text-sm text-gray-500 mt-2">Member since: <span></span></p>
+                        </div>
+
+                        <div class="mt-6 space-y-3">
+                            <button id="editProfileBtn" class="btn btn-primary w-full" onclick="editProfile()">
+                                <i class="ri-edit-line"></i> Edit Profile
+                            </button>
+                            <button id="changePasswordBtn" class="btn btn-outline w-full" onclick="changePassword()">
+                                <i class="ri-lock-line"></i> Change Password
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Profile Details -->
+                    <div class="md:w-2/3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="fullName" class="input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="email" class="input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" id="phone" class="input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="text" id="dob" class="input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <input type="text" id="address" class="input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Currency</label>
+                                <select id="currency" class="select" disabled>
+                                    <option value="INR" selected>INR (₹)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="JPY">JPY (¥)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold mb-3">Notification Preferences</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">Email Notifications</p>
+                                        <p class="text-sm text-gray-600">Receive updates via email</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="emailNotifications" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">Push Notifications</p>
+                                        <p class="text-sm text-gray-600">Receive push notifications</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="pushNotifications">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Status Section -->
+        <div class="glass-card">
+            <div id="accountStatusLoading" class="section-loading">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading account status...</p>
+            </div>
+            <div id="accountStatusContent" style="display: none;">
+                <h3 class="text-xl font-bold mb-4">Account Status</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card balance">
+                        <div class="relative z-10">
+                            <p class="text-white/80 text-sm mb-1">Net Balance</p>
+                            <p class="text-3xl font-bold" id="netBalance">₹0.00</p>
+                            <p class="text-white/60 text-xs mt-2">All accounts combined</p>
+                        </div>
+                    </div>
+                    <div class="stat-card income">
+                        <div class="relative z-10">
+                            <p class="text-white/80 text-sm mb-1">Total Income</p>
+                            <p class="text-3xl font-bold" id="totalIncome">₹0.00</p>
+                            <p class="text-white/60 text-xs mt-2">All time</p>
+                        </div>
+                    </div>
+                    <div class="stat-card expense">
+                        <div class="relative z-10">
+                            <p class="text-white/80 text-sm mb-1">Total Expenses</p>
+                            <p class="text-3xl font-bold" id="totalExpenses">₹0.00</p>
+                            <p class="text-white/60 text-xs mt-2">All time</p>
+                        </div>
+                    </div>
+                    <div class="stat-card savings">
+                        <div class="relative z-10">
+                            <p class="text-white/80 text-sm mb-1">Total Savings</p>
+                            <p class="text-3xl font-bold" id="totalSavings">₹0.00</p>
+                            <p class="text-white/60 text-xs mt-2">All time</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold mb-3">Account Balance Trend</h4>
+                        <div class="chart-container">
+                            <canvas id="balanceTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-3">Income vs Expenses</h4>
+                        <div class="chart-container">
+                            <canvas id="incomeExpenseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold mb-3">Account Details</h4>
+                    <div id="accountsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Accounts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Tools Section -->
+        <div class="glass-card">
+            <div id="financialToolsLoading" class="section-loading">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading financial tools...</p>
+            </div>
+            <div id="financialToolsContent" style="display: none;">
+                <h3 class="text-xl font-bold mb-4">Financial Tools</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Currency Converter -->
+                    <div class="tool-card currency-converter">
+                        <h4 class="text-lg font-semibold mb-3">Currency Converter</h4>
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <input type="number" id="converterAmount" class="input" placeholder="Amount">
+                            <select id="converterFrom" class="select">
+                                <option value="INR" selected>INR</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                            <select id="converterTo" class="select">
+                                <option value="INR">INR</option>
+                                <option value="USD" selected>USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                            <div class="input converter-result" id="converterResult">Result</div>
+                        </div>
+                        <button id="convertBtn" class="btn btn-primary w-full">
+                            <i class="ri-exchange-line"></i> Convert
+                        </button>
+                    </div>
+
+                    <!-- Budget Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Budget Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="budgetIncome" class="input" placeholder="Monthly Income">
+                            <input type="number" id="budgetSavings" class="input" placeholder="Savings Goal (%)">
+                            <div class="input" id="budgetResult">Recommended Budget</div>
+                        </div>
+                        <button id="calculateBudgetBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Loan Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Loan Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="loanAmount" class="input" placeholder="Loan Amount">
+                            <input type="number" id="loanRate" class="input" placeholder="Interest Rate (%)">
+                            <input type="number" id="loanTerm" class="input" placeholder="Loan Term (months)">
+                            <div class="input" id="loanResult">Monthly Payment</div>
+                        </div>
+                        <button id="calculateLoanBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Savings Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Savings Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="savingsAmount" class="input" placeholder="Initial Amount">
+                            <input type="number" id="savingsMonthly" class="input" placeholder="Monthly Contribution">
+                            <input type="number" id="savingsRate" class="input" placeholder="Interest Rate (%)">
+                            <input type="number" id="savingsYears" class="input" placeholder="Years">
+                            <div class="input" id="savingsResult">Future Value</div>
+                        </div>
+                        <button id="calculateSavingsBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Retirement Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Retirement Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="retirementCurrentAge" class="input" placeholder="Current Age">
+                            <input type="number" id="retirementAge" class="input" placeholder="Retirement Age">
+                            <input type="number" id="retirementMonthly" class="input" placeholder="Monthly Savings">
+                            <input type="number" id="retirementRate" class="input" placeholder="Expected Return (%)">
+                            <div class="input" id="retirementResult">Retirement Fund</div>
+                        </div>
+                        <button id="calculateRetirementBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Investment Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Investment Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="investmentAmount" class="input" placeholder="Initial Investment">
+                            <input type="number" id="investmentMonthly" class="input" placeholder="Monthly Investment">
+                            <input type="number" id="investmentRate" class="input" placeholder="Expected Return (%)">
+                            <input type="number" id="investmentYears" class="input" placeholder="Investment Period">
+                            <div class="input" id="investmentResult">Future Value</div>
+                        </div>
+                        <button id="calculateInvestmentBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Tax Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Tax Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <select id="taxCountry" class="select">
+                                <option value="india" selected>India</option>
+                                <option value="usa">USA</option>
+                                <option value="uk">UK</option>
+                            </select>
+                            <input type="number" id="taxIncome" class="input" placeholder="Annual Income">
+                            <select id="taxFiling" class="select">
+                                <option value="individual" selected>Individual</option>
+                                <option value="senior">Senior Citizen</option>
+                                <option value="super">Super Senior Citizen</option>
+                            </select>
+                            <div class="input" id="taxResult">Tax Amount</div>
+                        </div>
+                        <button id="calculateTaxBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- EMI Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">EMI Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="emiAmount" class="input" placeholder="Loan Amount">
+                            <input type="number" id="emiRate" class="input" placeholder="Interest Rate (%)">
+                            <input type="number" id="emiTenure" class="input" placeholder="Loan Tenure (months)">
+                            <div class="input" id="emiResult">Monthly EMI</div>
+                        </div>
+                        <button id="calculateEmiBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Inflation Calculator -->
+                    <div class="tool-card">
+                        <h4 class="text-lg font-semibold mb-3">Inflation Calculator</h4>
+                        <div class="space-y-2 mb-3">
+                            <input type="number" id="inflationAmount" class="input" placeholder="Current Amount">
+                            <input type="number" id="inflationRate" class="input" placeholder="Inflation Rate (%)">
+                            <input type="number" id="inflationYears" class="input" placeholder="Number of Years">
+                            <div class="input" id="inflationResult">Future Value</div>
+                        </div>
+                        <button id="calculateInflationBtn" class="btn btn-primary w-full">
+                            <i class="ri-calculator-line"></i> Calculate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Edit Profile</h3>
+                <button id="closeEditProfileModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+
+            <form id="editProfileForm" class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+                    <div class="flex items-center gap-4">
+                        <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                            <img id="editProfileAvatar" src="" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                            <button type="button" class="btn btn-primary"
+                                onclick="document.getElementById('avatarUpload').click()">
+                                <i class="ri-camera-line"></i> Change Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="editFullName" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="editEmail" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" id="editPhone" class="input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="text" id="editDob" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" id="editAddress" class="input">
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-1">
+                        <i class="ri-save-line"></i> Save Changes
+                    </button>
+                    <button type="button" id="cancelEditProfile" class="btn btn-outline flex-1">
+                        <i class="ri-close-line"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Change Password</h3>
+                <button id="closeChangePasswordModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+
+            <form id="changePasswordForm" class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" id="currentPassword" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="newPassword" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="input" required>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-1">
+                        <i class="ri-save-line"></i> Change Password
+                    </button>
+                    <button type="button" id="cancelChangePassword" class="btn btn-outline flex-1">
+                        <i class="ri-close-line"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Image Cropper Modal - COMPLETELY SOLID -->
+    <div id="imageCropperModal" class="image-cropper-modal">
+        <div class="cropper-container">
+            <div class="cropper-header">
+                <h3>Crop Profile Picture</h3>
+                <button class="cropper-close" onclick="closeImageCropper()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="cropper-body">
+                <div class="cropper-canvas-container">
+                    <div class="cropper-canvas">
+                        <img id="cropperImage" class="cropper-image" alt="Your image">
+                    </div>
+                </div>
+                <div class="cropper-controls">
+                    <div class="cropper-control-group">
+                        <span class="cropper-control-label">Zoom:</span>
+                        <input type="range" id="zoomSlider" class="cropper-slider" min="0.1" max="3" step="0.1"
+                            value="1">
+                        <span class="cropper-value" id="zoomValue">1.0x</span>
+                    </div>
+                    <div class="cropper-control-group">
+                        <span class="cropper-control-label">Brightness:</span>
+                        <input type="range" id="brightnessSlider" class="cropper-slider" min="0" max="200" step="1"
+                            value="100">
+                        <span class="cropper-value" id="brightnessValue">100%</span>
+                    </div>
+                    <div class="cropper-control-group">
+                        <span class="cropper-control-label">Contrast:</span>
+                        <input type="range" id="contrastSlider" class="cropper-slider" min="0" max="200" step="1"
+                            value="100">
+                        <span class="cropper-value" id="contrastValue">100%</span>
+                    </div>
+                    <div class="cropper-control-group">
+                        <span class="cropper-control-label">Saturation:</span>
+                        <input type="range" id="saturationSlider" class="cropper-slider" min="0" max="200" step="1"
+                            value="100">
+                        <span class="cropper-value" id="saturationValue">100%</span>
+                    </div>
+                </div>
+                <div class="cropper-actions">
+                    <button class="cropper-btn cropper-btn-primary" onclick="cropAndSaveImage()">
+                        <i class="ri-crop-line"></i> Crop & Save
+                    </button>
+                    <button class="cropper-btn cropper-btn-secondary" onclick="resetImage()">
+                        <i class="ri-refresh-line"></i> Reset
+                    </button>
+                    <button class="cropper-btn cropper-btn-secondary" onclick="closeImageCropper()">
+                        <i class="ri-close-line"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i id="notificationIcon" class="ri-check-line text-xl"></i>
+        <div>
+            <p id="notificationTitle" class="font-medium"></p>
+            <p id="notificationMessage" class="text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3HbtBbtcGf8b54DzlLfatJ_Xfdum-yqA",
+            authDomain: "budget-ce802.firebaseapp.com",
+            databaseURL: "https://budget-ce802-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "budget-ce802",
+            storageBucket: "budget-ce802.firebasestorage.app",
+            messagingSenderId: "346208284823",
+            appId: "1:346208284823:web:c580812cce390463e3f9d2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        // Global variables
+        let transactions = [];
+        let tags = [];
+        let accounts = [];
+        let budgets = [];
+        let charts = {};
+        let currencySymbol = '₹';
+        let defaultAccountId = '';
+        let userId = '';
+        let username = '';
+        let userProfile = {};
+
+        // Custom Image Cropper variables
+        let originalImage = null;
+        let currentImageElement = null;
+        let imageScale = 1;
+        let imageX = 0;
+        let imageY = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let cropX = 0;
+        let cropY = 0;
+        let cropSize = 200;
+        let brightness = 100;
+        let contrast = 100;
+        let saturation = 100;
+
+        // Exchange rates (using realistic rates)
+        const exchangeRates = {
+            INR: { USD: 0.012, EUR: 0.011, GBP: 0.0095, JPY: 1.73 },
+            USD: { INR: 82.5, EUR: 0.92, GBP: 0.79, JPY: 143.5 },
+            EUR: { INR: 89.5, USD: 1.09, GBP: 0.86, JPY: 155.8 },
+            GBP: { INR: 105.2, USD: 1.27, EUR: 1.16, JPY: 181.3 },
+            JPY: { INR: 0.58, USD: 0.007, EUR: 0.0064, GBP: 0.0055 }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            initializeApp();
+            setupEventListeners();
+            loadInitialData();
+            initializeImageCropper();
+        });
+
+        function checkAuthStatus() {
+            userId = localStorage.getItem('userId');
+            username = localStorage.getItem('username');
+
+            if (!userId || !username) {
+                // User is not logged in, redirect to login page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update username display
+            document.getElementById('profileUsername').textContent = username;
+        }
+
+        function initializeApp() {
+            // Initialize date pickers
+            flatpickr("#editDob", {
+                dateFormat: "Y-m-d",
+                maxDate: "today"
+            });
+
+            // Initialize charts
+            initializeCharts();
+        }
+
+        function setupEventListeners() {
+            // Profile dropdown
+            document.addEventListener('click', (e) => {
+                const profileDropdown = document.querySelector('.profile-dropdown');
+                const profileMenu = document.getElementById('profileMenu');
+
+                if (!profileDropdown.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+            });
+
+            // Avatar upload
+            document.getElementById('avatarUpload').addEventListener('change', handleAvatarUpload);
+
+            // Edit profile modal
+            document.getElementById('closeEditProfileModal').addEventListener('click', () => {
+                document.getElementById('editProfileModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelEditProfile').addEventListener('click', () => {
+                document.getElementById('editProfileModal').classList.remove('active');
+            });
+
+            document.getElementById('editProfileForm').addEventListener('submit', handleEditProfile);
+
+            // Change password modal
+            document.getElementById('closeChangePasswordModal').addEventListener('click', () => {
+                document.getElementById('changePasswordModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelChangePassword').addEventListener('click', () => {
+                document.getElementById('changePasswordModal').classList.remove('active');
+            });
+
+            document.getElementById('changePasswordForm').addEventListener('submit', handleChangePassword);
+
+            // Financial tools
+            document.getElementById('convertBtn').addEventListener('click', convertCurrency);
+            document.getElementById('calculateBudgetBtn').addEventListener('click', calculateBudget);
+            document.getElementById('calculateLoanBtn').addEventListener('click', calculateLoan);
+            document.getElementById('calculateSavingsBtn').addEventListener('click', calculateSavings);
+            document.getElementById('calculateRetirementBtn').addEventListener('click', calculateRetirement);
+            document.getElementById('calculateInvestmentBtn').addEventListener('click', calculateInvestment);
+            document.getElementById('calculateTaxBtn').addEventListener('click', calculateTax);
+            document.getElementById('calculateEmiBtn').addEventListener('click', calculateEmi);
+            document.getElementById('calculateInflationBtn').addEventListener('click', calculateInflation);
+        }
+
+        function loadInitialData() {
+            // Load data from Firebase
+            db.ref(`users/${userId}`).once('value')
+                .then((snapshot) => {
+                    const userData = snapshot.val() || {};
+
+                    // Load profile data
+                    if (userData.profile) {
+                        userProfile = userData.profile;
+                        updateProfileUI();
+                    }
+
+                    // Load preferences
+                    if (userData.data && userData.data.preferences) {
+                        currencySymbol = userData.data.preferences.currency === 'USD' ? '$' :
+                            userData.data.preferences.currency === 'EUR' ? '€' :
+                                userData.data.preferences.currency === 'GBP' ? '£' :
+                                    userData.data.preferences.currency === 'JPY' ? '¥' : '₹';
+                        defaultAccountId = userData.data.preferences.defaultAccount || '';
+                    }
+
+                    // Load transactions
+                    if (userData.data && userData.data.transactions) {
+                        transactions = Object.keys(userData.data.transactions).map(id => ({ id, ...userData.data.transactions[id] }));
+                        transactions.sort((a, b) => b.timestamp - a.timestamp);
+                    }
+
+                    // Load accounts
+                    if (userData.data && userData.data.accounts) {
+                        accounts = Object.keys(userData.data.accounts).map(id => ({ id, ...userData.data.accounts[id] }));
+                    }
+
+                    // Update UI
+                    updateAccountStatus();
+                    renderAccounts();
+                    updateCharts();
+
+                    // Set up real-time listeners
+                    setupRealtimeListeners();
+                })
+                .catch((error) => {
+                    console.error('Error loading data:', error);
+                    showNotification('error', 'Error', 'Failed to load data');
+                });
+        }
+
+        function setupRealtimeListeners() {
+            // Listen for transactions changes
+            db.ref(`users/${userId}/data/transactions`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                transactions = Object.keys(data).map(id => ({ id, ...data[id] }));
+                transactions.sort((a, b) => b.timestamp - a.timestamp);
+
+                updateAccountStatus();
+                updateCharts();
+            });
+
+            // Listen for accounts changes
+            db.ref(`users/${userId}/data/accounts`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                accounts = Object.keys(data).map(id => ({ id, ...data[id] }));
+
+                renderAccounts();
+                updateAccountStatus();
+            });
+        }
+
+        function updateProfileUI() {
+            if (userProfile) {
+                // Hide loading and show content
+                document.getElementById('profileSectionLoading').style.display = 'none';
+                document.getElementById('profileSectionContent').style.display = 'block';
+
+                // Update content
+                document.getElementById('profileName').textContent = userProfile.fullName || username;
+                document.getElementById('profileEmail').textContent = userProfile.email || '';
+                document.getElementById('memberSince').querySelector('span').textContent = userProfile.memberSince || 'January 2023';
+
+                document.getElementById('fullName').value = userProfile.fullName || '';
+                document.getElementById('email').value = userProfile.email || '';
+                document.getElementById('phone').value = userProfile.phone || '';
+                document.getElementById('dob').value = userProfile.dob || '';
+                document.getElementById('address').value = userProfile.address || '';
+
+                if (userProfile.avatar) {
+                    document.getElementById('profileAvatar').src = userProfile.avatar;
+                    document.getElementById('editProfileAvatar').src = userProfile.avatar;
+                } else {
+                    // Use a default avatar if none is set
+                    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile.fullName || username)}&background=6366f1&color=fff&size=120`;
+                    document.getElementById('profileAvatar').src = defaultAvatar;
+                    document.getElementById('editProfileAvatar').src = defaultAvatar;
+                }
+            }
+        }
+
+        function updateAccountStatus() {
+            // Hide loading and show content
+            document.getElementById('accountStatusLoading').style.display = 'none';
+            document.getElementById('accountStatusContent').style.display = 'block';
+
+            // Calculate totals
+            let totalIncome = 0;
+            let totalExpenses = 0;
+            let totalSavings = 0;
+
+            transactions.forEach(tx => {
+                if (tx.type === 'income') {
+                    totalIncome += tx.amount;
+                } else {
+                    totalExpenses += tx.amount;
+                }
+            });
+
+            totalSavings = totalIncome - totalExpenses;
+
+            // Update UI
+            document.getElementById('netBalance').textContent = `${currencySymbol}${totalSavings.toFixed(2)}`;
+            document.getElementById('totalIncome').textContent = `${currencySymbol}${totalIncome.toFixed(2)}`;
+            document.getElementById('totalExpenses').textContent = `${currencySymbol}${totalExpenses.toFixed(2)}`;
+            document.getElementById('totalSavings').textContent = `${currencySymbol}${totalSavings.toFixed(2)}`;
+        }
+
+        function renderAccounts() {
+            const accountsList = document.getElementById('accountsList');
+            accountsList.innerHTML = '';
+
+            if (accounts.length === 0) {
+                accountsList.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-3">No accounts found</p>';
+                return;
+            }
+
+            // Calculate account balances
+            const accountBalances = {};
+            accounts.forEach(account => {
+                accountBalances[account.id] = account.balance || 0;
+            });
+
+            transactions.forEach(tx => {
+                if (accountBalances[tx.accountId] !== undefined) {
+                    if (tx.type === 'income') {
+                        accountBalances[tx.accountId] += tx.amount;
+                    } else {
+                        accountBalances[tx.accountId] -= tx.amount;
+                    }
+                }
+            });
+
+            accounts.forEach(account => {
+                const balance = accountBalances[account.id] || 0;
+                const accountCard = document.createElement('div');
+                accountCard.className = 'account-card';
+                accountCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <h4 class="font-bold text-lg">${account.name}</h4>
+                            <p class="text-sm text-gray-500">${account.type}</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: ${account.type === 'cash' ? '#10B981' :
+                        account.type === 'bank' ? '#3B82F6' :
+                            account.type === 'credit' ? '#EF4444' : '#8B5CF6'
+                    }20">
+                            <i class="${account.type === 'cash' ? 'ri-money-dollar-circle-line text-green-600' :
+                        account.type === 'bank' ? 'ri-bank-line text-blue-600' :
+                            account.type === 'credit' ? 'ri-bank-card-line text-red-600' : 'ri-safe-2-line text-purple-600'
+                    }"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}">
+                        ${currencySymbol}${balance.toFixed(2)}
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Initial: ${currencySymbol}${(account.balance || 0).toFixed(2)}
+                    </div>
+                `;
+                accountsList.appendChild(accountCard);
+            });
+        }
+
+        function initializeCharts() {
+            // Balance trend chart
+            const balanceTrendCtx = document.getElementById('balanceTrendChart').getContext('2d');
+            charts.balanceTrend = new Chart(balanceTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Balance',
+                        data: [],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => currencySymbol + value
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Income vs expense chart
+            const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
+            charts.incomeExpense = new Chart(incomeExpenseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Income', 'Expenses'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#10B981', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            // Update balance trend chart
+            const monthlyData = {};
+            const today = new Date();
+
+            // Initialize last 6 months
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                const monthKey = date.toISOString().slice(0, 7);
+                monthlyData[monthKey] = 0;
+            }
+
+            // Calculate monthly balances
+            transactions.forEach(tx => {
+                const date = new Date(tx.timestamp);
+                const monthKey = date.toISOString().slice(0, 7);
+
+                if (monthlyData[monthKey] !== undefined) {
+                    if (tx.type === 'income') {
+                        monthlyData[monthKey] += tx.amount;
+                    } else {
+                        monthlyData[monthKey] -= tx.amount;
+                    }
+                }
+            });
+
+            // Calculate cumulative balance
+            let cumulativeBalance = 0;
+            const labels = [];
+            const data = [];
+
+            Object.keys(monthlyData).sort().forEach(month => {
+                cumulativeBalance += monthlyData[month];
+                labels.push(month);
+                data.push(cumulativeBalance);
+            });
+
+            charts.balanceTrend.data.labels = labels.map(label => {
+                const [year, month] = label.split('-');
+                return new Date(year, month - 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            });
+            charts.balanceTrend.data.datasets[0].data = data;
+            charts.balanceTrend.update();
+
+            // Update income vs expense chart
+            let totalIncome = 0;
+            let totalExpenses = 0;
+
+            transactions.forEach(tx => {
+                if (tx.type === 'income') {
+                    totalIncome += tx.amount;
+                } else {
+                    totalExpenses += tx.amount;
+                }
+            });
+
+            charts.incomeExpense.data.datasets[0].data = [totalIncome, totalExpenses];
+            charts.incomeExpense.update();
+        }
+
+        // Custom Image Cropper Functions
+        function initializeImageCropper() {
+            const cropperImage = document.getElementById('cropperImage');
+
+            // Add event listeners for controls
+            document.getElementById('zoomSlider').addEventListener('input', updateZoom);
+            document.getElementById('brightnessSlider').addEventListener('input', updateBrightness);
+            document.getElementById('contrastSlider').addEventListener('input', updateContrast);
+            document.getElementById('saturationSlider').addEventListener('input', updateSaturation);
+
+            // Add mouse events for dragging
+            cropperImage.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+            cropperImage.addEventListener('mouseleave', endDrag);
+
+            // Add touch events for mobile
+            cropperImage.addEventListener('touchstart', handleTouch);
+            document.addEventListener('touchmove', handleTouch);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            console.log('File selected:', file.name, file.type, file.size);
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                console.log('FileReader loaded, data URL length:', event.target.result.length);
+
+                const cropperImage = document.getElementById('cropperImage');
+                cropperImage.src = event.target.result;
+
+                cropperImage.onload = function () {
+                    console.log('Image loaded successfully, dimensions:', this.naturalWidth, 'x', this.naturalHeight);
+
+                    originalImage = this;
+                    currentImageElement = this;
+
+                    // Reset all values
+                    imageScale = 1;
+                    imageX = 0;
+                    imageY = 0;
+                    brightness = 100;
+                    contrast = 100;
+                    saturation = 100;
+
+                    // Reset sliders
+                    document.getElementById('zoomSlider').value = 1;
+                    document.getElementById('brightnessSlider').value = 100;
+                    document.getElementById('contrastSlider').value = 100;
+                    document.getElementById('saturationSlider').value = 100;
+
+                    // Update value displays
+                    document.getElementById('zoomValue').textContent = '1.0x';
+                    document.getElementById('brightnessValue').textContent = '100%';
+                    document.getElementById('contrastValue').textContent = '100%';
+                    document.getElementById('saturationValue').textContent = '100%';
+
+                    // Show cropper modal
+                    document.getElementById('imageCropperModal').classList.add('active');
+
+                    // Center the image
+                    centerImage();
+
+                    // Apply initial styles
+                    applyImageStyles();
+                };
+
+                cropperImage.onerror = function () {
+                    console.error('Failed to load image');
+                    showNotification('error', 'Error', 'Failed to load the selected image');
+                };
+            };
+
+            reader.onerror = function () {
+                console.error('Failed to read file');
+                showNotification('error', 'Error', 'Failed to read the selected file');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function centerImage() {
+            if (!currentImageElement) return;
+
+            const container = document.querySelector('.cropper-canvas-container');
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+
+            // Calculate scale to fit image in canvas
+            const scaleX = containerWidth / currentImageElement.naturalWidth;
+            const scaleY = containerHeight / currentImageElement.naturalHeight;
+            imageScale = Math.min(scaleX, scaleY) * 0.8; // 80% of the fitting scale
+
+            // Center the image
+            imageX = (containerWidth - currentImageElement.naturalWidth * imageScale) / 2;
+            imageY = (containerHeight - currentImageElement.naturalHeight * imageScale) / 2;
+
+            // Set crop area in the center
+            cropSize = Math.min(containerWidth, containerHeight) * 0.8;
+            cropX = (containerWidth - cropSize) / 2;
+            cropY = (containerHeight - cropSize) / 2;
+        }
+
+        function applyImageStyles() {
+            if (!currentImageElement) return;
+
+            currentImageElement.style.transform = `translate(${imageX}px, ${imageY}px) scale(${imageScale})`;
+            currentImageElement.style.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+            currentImageElement.style.position = 'absolute';
+            currentImageElement.style.left = '0';
+            currentImageElement.style.top = '0';
+            currentImageElement.style.transformOrigin = 'top left';
+            currentImageElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+        }
+
+        function startDrag(e) {
+            if (!currentImageElement) return;
+
+            isDragging = true;
+            dragStartX = e.clientX - imageX;
+            dragStartY = e.clientY - imageY;
+            currentImageElement.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging || !currentImageElement) return;
+
+            imageX = e.clientX - dragStartX;
+            imageY = e.clientY - dragStartY;
+
+            applyImageStyles();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            if (currentImageElement) {
+                currentImageElement.style.cursor = 'grab';
+            }
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' :
+                e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+
+            if (e.type === 'touchstart') {
+                startDrag(mouseEvent);
+            } else if (e.type === 'touchmove') {
+                drag(mouseEvent);
+            }
+        }
+
+        function updateZoom(e) {
+            imageScale = parseFloat(e.target.value);
+            document.getElementById('zoomValue').textContent = imageScale.toFixed(1) + 'x';
+            applyImageStyles();
+        }
+
+        function updateBrightness(e) {
+            brightness = parseInt(e.target.value);
+            document.getElementById('brightnessValue').textContent = brightness + '%';
+            applyImageStyles();
+        }
+
+        function updateContrast(e) {
+            contrast = parseInt(e.target.value);
+            document.getElementById('contrastValue').textContent = contrast + '%';
+            applyImageStyles();
+        }
+
+        function updateSaturation(e) {
+            saturation = parseInt(e.target.value);
+            document.getElementById('saturationValue').textContent = saturation + '%';
+            applyImageStyles();
+        }
+
+        function resetImage() {
+            if (!originalImage) return;
+
+            // Reset all values
+            currentImageElement = originalImage;
+            imageScale = 1;
+            imageX = 0;
+            imageY = 0;
+            brightness = 100;
+            contrast = 100;
+            saturation = 100;
+
+            // Reset sliders
+            document.getElementById('zoomSlider').value = 1;
+            document.getElementById('brightnessSlider').value = 100;
+            document.getElementById('contrastSlider').value = 100;
+            document.getElementById('saturationSlider').value = 100;
+
+            // Update value displays
+            document.getElementById('zoomValue').textContent = '1.0x';
+            document.getElementById('brightnessValue').textContent = '100%';
+            document.getElementById('contrastValue').textContent = '100%';
+            document.getElementById('saturationValue').textContent = '100%';
+
+            // Center the image
+            centerImage();
+
+            // Apply styles
+            applyImageStyles();
+        }
+
+        function closeImageCropper() {
+            document.getElementById('imageCropperModal').classList.remove('active');
+            originalImage = null;
+            currentImageElement = null;
+        }
+
+        function cropAndSaveImage() {
+            if (!currentImageElement) return;
+
+            // Create a temporary canvas for the cropped image
+            const tempCanvas = document.createElement('canvas');
+            const tempContext = tempCanvas.getContext('2d');
+
+            // Set canvas size to crop size
+            tempCanvas.width = cropSize;
+            tempCanvas.height = cropSize;
+
+            // Calculate the source rectangle for cropping
+            const sourceX = (cropX - imageX) / imageScale;
+            const sourceY = (cropY - imageY) / imageScale;
+            const sourceWidth = cropSize / imageScale;
+            const sourceHeight = cropSize / imageScale;
+
+            // Save context state
+            tempContext.save();
+
+            // Apply filters
+            tempContext.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+
+            // Draw the cropped portion of the image
+            tempContext.drawImage(
+                currentImageElement,
+                sourceX,
+                sourceY,
+                sourceWidth,
+                sourceHeight,
+                0,
+                0,
+                cropSize,
+                cropSize
+            );
+
+            // Restore context state
+            tempContext.restore();
+
+            // Convert to data URL
+            const avatarUrl = tempCanvas.toDataURL('image/jpeg', 0.8);
+
+            // Update profile avatars
+            document.getElementById('profileAvatar').src = avatarUrl;
+            document.getElementById('editProfileAvatar').src = avatarUrl;
+
+            // Save to Firebase
+            const updates = {};
+            updates[`users/${userId}/profile/avatar`] = avatarUrl;
+            db.ref().update(updates)
+                .then(() => {
+                    showNotification('success', 'Avatar Updated', 'Your profile picture has been updated');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+
+            // Close modal
+            closeImageCropper();
+        }
+
+        function editProfile() {
+            // Populate form with current data
+            document.getElementById('editFullName').value = userProfile.fullName || username;
+            document.getElementById('editEmail').value = userProfile.email || '';
+            document.getElementById('editPhone').value = userProfile.phone || '';
+            document.getElementById('editDob').value = userProfile.dob || '';
+            document.getElementById('editAddress').value = userProfile.address || '';
+
+            // Set avatar in edit form
+            if (userProfile.avatar) {
+                document.getElementById('editProfileAvatar').src = userProfile.avatar;
+            } else {
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile.fullName || username)}&background=6366f1&color=fff&size=120`;
+                document.getElementById('editProfileAvatar').src = defaultAvatar;
+            }
+
+            // Show modal
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function handleEditProfile(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('editFullName').value;
+            const email = document.getElementById('editEmail').value;
+            const phone = document.getElementById('editPhone').value;
+            const dob = document.getElementById('editDob').value;
+            const address = document.getElementById('editAddress').value;
+
+            // Update profile
+            const updates = {};
+            updates[`users/${userId}/profile/fullName`] = fullName;
+            updates[`users/${userId}/profile/email`] = email;
+            updates[`users/${userId}/profile/phone`] = phone;
+            updates[`users/${userId}/profile/dob`] = dob;
+            updates[`users/${userId}/profile/address`] = address;
+            updates[`users/${userId}/profile/updatedAt`] = new Date().getTime();
+
+            db.ref().update(updates)
+                .then(() => {
+                    // Update local profile data
+                    userProfile.fullName = fullName;
+                    userProfile.email = email;
+                    userProfile.phone = phone;
+                    userProfile.dob = dob;
+                    userProfile.address = address;
+
+                    // Update UI
+                    updateProfileUI();
+
+                    // Close modal
+                    document.getElementById('editProfileModal').classList.remove('active');
+
+                    showNotification('success', 'Profile Updated', 'Your profile has been updated successfully');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function changePassword() {
+            // Show modal
+            document.getElementById('changePasswordModal').classList.add('active');
+        }
+
+        function handleChangePassword(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate passwords
+            if (newPassword !== confirmPassword) {
+                showNotification('error', 'Password Mismatch', 'New passwords do not match');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('error', 'Weak Password', 'Password must be at least 6 characters');
+                return;
+            }
+
+            // In a real app, you would verify the current password with the server
+            // For this demo, we'll just update the password
+            const updates = {};
+            updates[`users/${userId}/password`] = newPassword;
+            updates[`users/${userId}/profile/passwordUpdatedAt`] = new Date().getTime();
+
+            db.ref().update(updates)
+                .then(() => {
+                    // Update local storage
+                    localStorage.setItem('password', newPassword);
+
+                    // Close modal
+                    document.getElementById('changePasswordModal').classList.remove('active');
+
+                    showNotification('success', 'Password Changed', 'Your password has been updated successfully');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        // Financial Tools Functions
+        function convertCurrency() {
+            const amount = parseFloat(document.getElementById('converterAmount').value);
+            const from = document.getElementById('converterFrom').value;
+            const to = document.getElementById('converterTo').value;
+            const converter = document.querySelector('.currency-converter');
+            const resultEl = document.getElementById('converterResult');
+
+            if (!amount) {
+                showNotification('error', 'Invalid Amount', 'Please enter a valid amount');
+                return;
+            }
+
+            // Add converting animation
+            converter.classList.add('converting');
+            resultEl.classList.remove('converter-result');
+
+            setTimeout(() => {
+                if (from === to) {
+                    resultEl.textContent = `${amount.toFixed(2)} ${to}`;
+                } else {
+                    const rate = exchangeRates[from][to];
+                    const result = amount * rate;
+                    resultEl.textContent = `${result.toFixed(2)} ${to}`;
+                }
+
+                // Remove converting animation and add result animation
+                converter.classList.remove('converting');
+                resultEl.classList.add('converter-result');
+            }, 600);
+        }
+
+        function calculateBudget() {
+            const income = parseFloat(document.getElementById('budgetIncome').value);
+            const savingsRate = parseFloat(document.getElementById('budgetSavings').value) || 20;
+
+            if (!income) {
+                showNotification('error', 'Invalid Income', 'Please enter a valid income amount');
+                return;
+            }
+
+            const savings = income * (savingsRate / 100);
+            const remaining = income - savings;
+
+            // Recommended budget allocation (50/30/20 rule)
+            const needs = remaining * 0.5;
+            const wants = remaining * 0.3;
+            const debt = remaining * 0.2;
+
+            document.getElementById('budgetResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Savings (${savingsRate}%):</span>
+                        <span class="font-medium">${currencySymbol}${savings.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Needs (50%):</span>
+                        <span class="font-medium">${currencySymbol}${needs.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Wants (30%):</span>
+                        <span class="font-medium">${currencySymbol}${wants.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Debt (20%):</span>
+                        <span class="font-medium">${currencySymbol}${debt.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateLoan() {
+            const principal = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('loanRate').value);
+            const months = parseInt(document.getElementById('loanTerm').value);
+
+            if (!principal || !annualRate || !months) {
+                showNotification('error', 'Invalid Input', 'Please enter valid loan details');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - principal;
+
+            document.getElementById('loanResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Monthly Payment:</span>
+                        <span class="font-medium">${currencySymbol}${monthlyPayment.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Payment:</span>
+                        <span class="font-medium">${currencySymbol}${totalPayment.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Interest:</span>
+                        <span class="font-medium">${currencySymbol}${totalInterest.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateSavings() {
+            const initial = parseFloat(document.getElementById('savingsAmount').value) || 0;
+            const monthly = parseFloat(document.getElementById('savingsMonthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('savingsRate').value) || 0;
+            const years = parseInt(document.getElementById('savingsYears').value);
+
+            if (!years) {
+                showNotification('error', 'Invalid Input', 'Please enter a valid number of years');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+
+            // Future value of an annuity formula
+            const futureValue = initial * Math.pow(1 + monthlyRate, months) +
+                monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+
+            const totalContributions = initial + (monthly * months);
+            const totalInterest = futureValue - totalContributions;
+
+            document.getElementById('savingsResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Future Value:</span>
+                        <span class="font-medium">${currencySymbol}${futureValue.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Contributions:</span>
+                        <span class="font-medium">${currencySymbol}${totalContributions.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Interest:</span>
+                        <span class="font-medium">${currencySymbol}${totalInterest.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateRetirement() {
+            const currentAge = parseInt(document.getElementById('retirementCurrentAge').value);
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const monthlySavings = parseFloat(document.getElementById('retirementMonthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('retirementRate').value) || 0;
+
+            if (!currentAge || !retirementAge || currentAge >= retirementAge) {
+                showNotification('error', 'Invalid Input', 'Please enter valid ages');
+                return;
+            }
+
+            const yearsToRetirement = retirementAge - currentAge;
+            const monthsToRetirement = yearsToRetirement * 12;
+            const monthlyRate = annualRate / 100 / 12;
+
+            // Future value of an annuity formula
+            const retirementFund = monthlySavings * ((Math.pow(1 + monthlyRate, monthsToRetirement) - 1) / monthlyRate);
+
+            document.getElementById('retirementResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Years to Retirement:</span>
+                        <span class="font-medium">${yearsToRetirement} years</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Retirement Fund:</span>
+                        <span class="font-medium">${currencySymbol}${retirementFund.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Monthly Savings:</span>
+                        <span class="font-medium">${currencySymbol}${monthlySavings.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateInvestment() {
+            const initial = parseFloat(document.getElementById('investmentAmount').value) || 0;
+            const monthly = parseFloat(document.getElementById('investmentMonthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('investmentRate').value) || 0;
+            const years = parseInt(document.getElementById('investmentYears').value);
+
+            if (!years) {
+                showNotification('error', 'Invalid Input', 'Please enter a valid number of years');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+
+            // Future value of an annuity formula
+            const futureValue = initial * Math.pow(1 + monthlyRate, months) +
+                monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+
+            const totalInvested = initial + (monthly * months);
+            const totalReturns = futureValue - totalInvested;
+
+            document.getElementById('investmentResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Future Value:</span>
+                        <span class="font-medium">${currencySymbol}${futureValue.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Invested:</span>
+                        <span class="font-medium">${currencySymbol}${totalInvested.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Returns:</span>
+                        <span class="font-medium">${currencySymbol}${totalReturns.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateTax() {
+            const country = document.getElementById('taxCountry').value;
+            const income = parseFloat(document.getElementById('taxIncome').value);
+            const filing = document.getElementById('taxFiling').value;
+
+            if (!income) {
+                showNotification('error', 'Invalid Input', 'Please enter a valid income amount');
+                return;
+            }
+
+            let taxAmount = 0;
+
+            if (country === 'india') {
+                // Simplified Indian tax calculation
+                if (income <= 250000) {
+                    taxAmount = 0;
+                } else if (income <= 500000) {
+                    taxAmount = (income - 250000) * 0.05;
+                } else if (income <= 1000000) {
+                    taxAmount = 12500 + (income - 500000) * 0.2;
+                } else {
+                    taxAmount = 112500 + (income - 1000000) * 0.3;
+                }
+
+                // Add cess
+                taxAmount += taxAmount * 0.04;
+
+                // Senior citizen benefits
+                if (filing === 'senior' && income <= 500000) {
+                    taxAmount = 0;
+                } else if (filing === 'super' && income <= 1000000) {
+                    taxAmount = 0;
+                }
+            } else if (country === 'usa') {
+                // Simplified US tax calculation
+                if (income <= 10275) {
+                    taxAmount = income * 0.1;
+                } else if (income <= 41775) {
+                    taxAmount = 1027.5 + (income - 10275) * 0.12;
+                } else if (income <= 89450) {
+                    taxAmount = 4814 + (income - 41775) * 0.22;
+                } else if (income <= 190750) {
+                    taxAmount = 15213.5 + (income - 89450) * 0.24;
+                } else {
+                    taxAmount = 37104 + (income - 190750) * 0.32;
+                }
+            } else if (country === 'uk') {
+                // Simplified UK tax calculation
+                if (income <= 12570) {
+                    taxAmount = 0;
+                } else if (income <= 50270) {
+                    taxAmount = (income - 12570) * 0.2;
+                } else if (income <= 125140) {
+                    taxAmount = 7540 + (income - 50270) * 0.4;
+                } else {
+                    taxAmount = 37470 + (income - 125140) * 0.45;
+                }
+            }
+
+            const takeHome = income - taxAmount;
+            const effectiveRate = (taxAmount / income * 100).toFixed(2);
+
+            document.getElementById('taxResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Tax Amount:</span>
+                        <span class="font-medium">${currencySymbol}${taxAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Take Home:</span>
+                        <span class="font-medium">${currencySymbol}${takeHome.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Effective Rate:</span>
+                        <span class="font-medium">${effectiveRate}%</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateEmi() {
+            const principal = parseFloat(document.getElementById('emiAmount').value);
+            const annualRate = parseFloat(document.getElementById('emiRate').value);
+            const tenure = parseInt(document.getElementById('emiTenure').value);
+
+            if (!principal || !annualRate || !tenure) {
+                showNotification('error', 'Invalid Input', 'Please enter valid EMI details');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, tenure) / (Math.pow(1 + monthlyRate, tenure) - 1);
+            const totalPayment = emi * tenure;
+            const totalInterest = totalPayment - principal;
+
+            document.getElementById('emiResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Monthly EMI:</span>
+                        <span class="font-medium">${currencySymbol}${emi.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Payment:</span>
+                        <span class="font-medium">${currencySymbol}${totalPayment.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total Interest:</span>
+                        <span class="font-medium">${currencySymbol}${totalInterest.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateInflation() {
+            const amount = parseFloat(document.getElementById('inflationAmount').value);
+            const rate = parseFloat(document.getElementById('inflationRate').value) / 100;
+            const years = parseInt(document.getElementById('inflationYears').value);
+
+            if (!amount || !rate || !years) {
+                showNotification('error', 'Invalid Input', 'Please enter valid inflation details');
+                return;
+            }
+
+            const futureValue = amount * Math.pow(1 + rate, years);
+            const inflationImpact = futureValue - amount;
+            const purchasingPower = amount / futureValue * 100;
+
+            document.getElementById('inflationResult').innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>Future Value:</span>
+                        <span class="font-medium">${currencySymbol}${futureValue.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Inflation Impact:</span>
+                        <span class="font-medium">${currencySymbol}${inflationImpact.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Purchasing Power:</span>
+                        <span class="font-medium">${purchasingPower.toFixed(2)}%</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            const profileMenu = document.getElementById('profileMenu');
+            profileMenu.classList.toggle('active');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            // Clear all local storage
+            localStorage.clear();
+
+            // Show notification
+            showNotification('success', 'Logged Out', 'You have been successfully logged out');
+
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        function showNotification(type, title, message) {
+            const notificationEl = document.getElementById('notification');
+            const iconEl = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            // Set notification type
+            notificationEl.className = `notification ${type}`;
+
+            // Set icon
+            switch (type) {
+                case 'success':
+                    iconEl.className = 'ri-check-line text-xl text-green-600';
+                    break;
+                case 'error':
+                    iconEl.className = 'ri-error-warning-line text-xl text-red-600';
+                    break;
+                case 'info':
+                    iconEl.className = 'ri-information-line text-xl text-blue-600';
+                    break;
+            }
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Show notification
+            notificationEl.classList.add('show');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notificationEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add toggle switch styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .toggle-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+                border-radius: 24px;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+            input:checked + .slider {
+                background-color: var(--primary);
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 1000;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(5px);
+            }
+
+            .modal.active {
+                display: flex;
+                animation: fadeIn 0.3s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .modal-content {
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                border-radius: 20px;
+                width: 90%;
+                max-width: 500px;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 32px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                animation: slideUp 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            @keyframes slideUp {
+                from {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuContent = document.querySelector('.mobile-menu-content');
+
+            if (!mobileMenuContent.contains(e.target) && !e.target.closest('.md\\:hidden')) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Initialize financial tools after a short delay
+        setTimeout(() => {
+            document.getElementById('financialToolsLoading').style.display = 'none';
+            document.getElementById('financialToolsContent').style.display = 'block';
+        }, 1000);
+    </script>
+</body>
+
+</html>

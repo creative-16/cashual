@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts - Budget Planner & Expense Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --pastel-blue: #E0E7FF;
+            --pastel-green: #D1FAE5;
+            --pastel-red: #FEE2E2;
+            --pastel-yellow: #FEF3C7;
+            --pastel-purple: #EDE9FE;
+            --pastel-pink: #FCE7F3;
+            --pastel-gray: #F3F4F6;
+            --indian-saffron: #FF9933;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .pastel-card {
+            background: var(--pastel-gray);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .pastel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-outline {
+            background: var(--pastel-gray);
+            border: 2px solid var(--gray);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--pastel-blue);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn i {
+            font-size: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.home {
+            background-color: var(--primary);
+        }
+
+        .nav-btn.home i {
+            color: white;
+        }
+
+        .nav-btn.home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn.overview {
+            background-color: var(--info);
+        }
+
+        .nav-btn.overview i {
+            color: white;
+        }
+
+        .nav-btn.overview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn.accounts {
+            background-color: var(--secondary);
+        }
+
+        .nav-btn.accounts i {
+            color: white;
+        }
+
+        .nav-btn.accounts:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .nav-btn.budget {
+            background-color: var(--warning);
+        }
+
+        .nav-btn.budget i {
+            color: white;
+        }
+
+        .nav-btn.budget:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .nav-btn.settings {
+            background-color: var(--gray);
+        }
+
+        .nav-btn.settings i {
+            color: white;
+        }
+
+        .nav-btn.settings:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        .nav-btn.profile {
+            background-color: var(--purple);
+        }
+
+        .nav-btn.profile i {
+            color: white;
+        }
+
+        .nav-btn.profile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .account-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .account-card:hover::before {
+            left: 100%;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .account-card.selected {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .account-card.cash {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: white;
+        }
+
+        .account-card.bank {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .account-card.credit {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+        }
+
+        .account-card.savings {
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--pastel-gray);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transaction-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .transaction-item:hover::before {
+            left: 100%;
+        }
+
+        .transaction-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .transaction-item.income {
+            border-left-color: var(--secondary);
+            background: var(--pastel-green);
+        }
+
+        .transaction-item.expense {
+            border-left-color: var(--danger);
+            background: var(--pastel-red);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 10px;
+            margin-top: 8px;
+            min-width: 200px;
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .profile-menu-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .transactions-container {
+            height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .transactions-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .transactions-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .transactions-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .transactions-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: white;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active .mobile-menu-content {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-item:hover {
+            background: var(--pastel-gray);
+        }
+
+        .mobile-menu-item i {
+            font-size: 20px;
+        }
+
+        .mobile-menu-item.home {
+            color: var(--primary);
+        }
+
+        .mobile-menu-item.overview {
+            color: var(--info);
+        }
+
+        .mobile-menu-item.accounts {
+            color: var(--secondary);
+        }
+
+        .mobile-menu-item.budget {
+            color: var(--warning);
+        }
+
+        .mobile-menu-item.settings {
+            color: var(--gray);
+        }
+
+        .mobile-menu-item.profile {
+            color: var(--purple);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .stat-card.total {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .stat-card.income {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+        }
+
+        .stat-card.expense {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .filter-tab {
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            color: var(--gray);
+        }
+
+        .filter-tab:hover {
+            color: var(--primary);
+        }
+
+        .filter-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .transfer-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .transfer-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Mobile button styles - only apply on mobile */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+
+            .glass-card,
+            .pastel-card {
+                padding: 16px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .nav-btn i {
+                font-size: 24px;
+            }
+
+            .transactions-container {
+                height: 300px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            /* Make buttons icon-only on mobile */
+            .btn-responsive {
+                width: 40px;
+                height: 40px;
+                padding: 0;
+                border-radius: 50%;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .btn-responsive i {
+                font-size: 18px;
+                margin: 0;
+            }
+
+            .btn-responsive .btn-text {
+                display: none;
+            }
+
+            /* Adjust header layout for mobile */
+            .nav-container .flex {
+                flex-wrap: wrap;
+            }
+
+            .nav-container .flex>div:first-child {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            /* Ensure buttons stay within container */
+            .glass-card .flex {
+                flex-wrap: wrap;
+            }
+
+            .glass-card .flex>div:first-child {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .glass-card .flex>div:last-child {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <h2 class="text-xl font-bold">Menu</h2>
+                <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="mobile-menu-item home" onclick="navigateTo('home.html')">
+                <i class="ri-home-4-line"></i>
+                <span>Home</span>
+            </div>
+            <div class="mobile-menu-item overview" onclick="navigateTo('overview.html')">
+                <i class="ri-dashboard-line"></i>
+                <span>Overview</span>
+            </div>
+            <div class="mobile-menu-item accounts" onclick="navigateTo('accounts.html')">
+                <i class="ri-wallet-line"></i>
+                <span>Accounts</span>
+            </div>
+            <div class="mobile-menu-item budget" onclick="navigateTo('budget.html')">
+                <i class="ri-pie-chart-line"></i>
+                <span>Budget</span>
+            </div>
+            <div class="mobile-menu-item settings" onclick="navigateTo('settings.html')">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </div>
+            <div class="mobile-menu-item profile" onclick="navigateTo('profile.html')">
+                <i class="ri-user-3-line"></i>
+                <span>Profile</span>
+            </div>
+            <div class="mobile-menu-item" onclick="logout()">
+                <i class="ri-logout-box-line"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="nav-container">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="ri-menu-line text-2xl text-gray-700"></i>
+                </button>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: #10B981;">
+                    <i class="ri-wallet-line text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Accounts
+                    </h1>
+                    <p class="text-sm text-gray-600">Manage your financial accounts</p>
+                </div>
+            </div>
+            <div class="desktop-nav flex items-center gap-4">
+                <button class="nav-btn home" onclick="navigateTo('home.html')" title="Home">
+                    <i class="ri-home-4-line"></i>
+                </button>
+                <button class="nav-btn overview" onclick="navigateTo('overview.html')" title="Overview">
+                    <i class="ri-dashboard-line"></i>
+                </button>
+                <button class="nav-btn accounts" onclick="navigateTo('accounts.html')" title="Accounts">
+                    <i class="ri-wallet-line"></i>
+                </button>
+                <button class="nav-btn budget" onclick="navigateTo('budget.html')" title="Budget">
+                    <i class="ri-pie-chart-line"></i>
+                </button>
+                <button class="nav-btn settings" onclick="navigateTo('settings.html')" title="Settings">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="nav-btn profile" title="Profile" onclick="toggleProfileMenu(event)">
+                        <i class="ri-user-3-line"></i>
+                    </button>
+                    <div id="profileMenu" class="profile-menu">
+                        <a href="profile.html">
+                            <div class="profile-menu-item">
+                                <i class="ri-user-line"></i>
+                                <span id="profileUsername">Username</span>
+                            </div>
+                        </a>
+                        <div class="profile-menu-item" onclick="logout()">
+                            <i class="ri-logout-box-line"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Account Overview Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="stat-card total">
+                <div class="relative z-10">
+                    <p class="text-white/80 text-sm mb-1">Total Balance</p>
+                    <p class="text-3xl font-bold" id="totalBalance">₹0.00</p>
+                    <p class="text-white/60 text-xs mt-2">Across all accounts</p>
+                </div>
+            </div>
+            <div class="stat-card income">
+                <div class="relative z-10">
+                    <p class="text-white/80 text-sm mb-1">Total Income</p>
+                    <p class="text-3xl font-bold" id="totalIncome">₹0.00</p>
+                    <p class="text-white/60 text-xs mt-2">This month</p>
+                </div>
+            </div>
+            <div class="stat-card expense">
+                <div class="relative z-10">
+                    <p class="text-white/80 text-sm mb-1">Total Expenses</p>
+                    <p class="text-3xl font-bold" id="totalExpense">₹0.00</p>
+                    <p class="text-white/60 text-xs mt-2">This month</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accounts Section -->
+        <div class="glass-card mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Your Accounts</h3>
+                <div class="flex gap-2">
+                    <button id="exportAccountsBtn" class="btn btn-outline btn-responsive" title="Export">
+                        <i class="ri-download-line"></i>
+                        <span class="btn-text">Export</span>
+                    </button>
+                    <button id="addAccountBtn" class="btn btn-primary btn-responsive" title="Add Account">
+                        <i class="ri-add-line"></i>
+                        <span class="btn-text">Add Account</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="accountsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Accounts will be loaded here -->
+            </div>
+        </div>
+
+
+
+        <!-- Account Details Section -->
+        <div class="glass-card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold" id="selectedAccountTitle">Select an Account From Above</h3>
+                <div class="flex gap-2 flex-wrap">
+                    <select id="transactionFilter" class="select w-auto">
+                        <option value="all">All Transactions</option>
+                        <option value="income">Income Only</option>
+                        <option value="expense">Expenses Only</option>
+                    </select>
+                    <input type="text" id="dateRangeFilter" class="input" placeholder="Date Range">
+                    <button id="filterBtn" class="btn btn-outline">
+                        <i class="ri-filter-line"></i> Filter
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-filter="all">All</div>
+                <div class="filter-tab" data-filter="today">Today</div>
+                <div class="filter-tab" data-filter="week">This Week</div>
+                <div class="filter-tab" data-filter="month">This Month</div>
+                <div class="filter-tab" data-filter="year">This Year</div>
+            </div>
+
+            <div id="accountDetails" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                        <p class="text-green-600 text-sm font-medium mb-1">Account Balance</p>
+                        <p class="text-2xl font-bold text-green-900" id="accountBalance">₹0.00</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                        <p class="text-blue-600 text-sm font-medium mb-1">Total Income</p>
+                        <p class="text-2xl font-bold text-blue-900" id="accountIncome">₹0.00</p>
+                    </div>
+                    <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                        <p class="text-red-600 text-sm font-medium mb-1">Total Expenses</p>
+                        <p class="text-2xl font-bold text-red-900" id="accountExpense">₹0.00</p>
+                    </div>
+                </div>
+
+                <div class="chart-container mb-6">
+                    <canvas id="accountChart"></canvas>
+                </div>
+            </div>
+
+            <div id="accountTransactions" class="transactions-container">
+                <!-- Account transactions will be loaded here -->
+            </div>
+        </div>
+        <!-- Transfer Funds Section -->
+        <div class="transfer-card mb-6">
+            <h3 class="text-xl font-bold mb-4">Quick Transfer</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                <select id="transferFrom" class="select">
+                    <option value="">From Account</option>
+                </select>
+                <select id="transferTo" class="select">
+                    <option value="">To Account</option>
+                </select>
+                <input type="number" id="transferAmount" class="input" placeholder="Amount">
+                <input type="text" id="transferNote" class="input" placeholder="Note (optional)">
+                <button id="transferBtn" class="btn btn-primary">
+                    <i class="ri-exchange-line"></i> Transfer
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Account Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Add Account</h3>
+                <button id="closeAccountModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+
+            <form id="accountForm" class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Account Name</label>
+                    <input type="text" id="accountName" class="input" placeholder="Account name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Account Type</label>
+                    <select id="accountType" class="select" required>
+                        <option value="cash">Cash</option>
+                        <option value="bank">Bank</option>
+                        <option value="credit">Credit Card</option>
+                        <option value="savings">Savings</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Initial Balance</label>
+                    <input type="number" id="accountBalance" class="input" placeholder="0.00" step="0.01">
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-1">
+                        <i class="ri-save-line"></i> Save Account
+                    </button>
+                    <button type="button" id="cancelAccount" class="btn btn-outline flex-1">
+                        <i class="ri-close-line"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i id="notificationIcon" class="ri-check-line text-xl"></i>
+        <div>
+            <p id="notificationTitle" class="font-medium"></p>
+            <p id="notificationMessage" class="text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3HbtBbtcGf8b54DzlLfatJ_Xfdum-yqA",
+            authDomain: "budget-ce802.firebaseapp.com",
+            databaseURL: "https://budget-ce802-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "budget-ce802",
+            storageBucket: "budget-ce802.firebasestorage.app",
+            messagingSenderId: "346208284823",
+            appId: "1:346208284823:web:c580812cce390463e3f9d2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        // Global variables
+        let transactions = [];
+        let tags = [];
+        let accounts = [];
+        let selectedAccountId = '';
+        let charts = {};
+        let currencySymbol = '₹';
+        let userId = '';
+        let username = '';
+
+        // Initialize date picker for date range filter
+        flatpickr("#dateRangeFilter", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            defaultDate: [
+                new Date(new Date().setDate(new Date().getDate() - 30)),
+                new Date()
+            ]
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            initializeApp();
+            setupEventListeners();
+            loadInitialData();
+        });
+
+        function checkAuthStatus() {
+            userId = localStorage.getItem('userId');
+            username = localStorage.getItem('username');
+
+            if (!userId || !username) {
+                // User is not logged in, redirect to login page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update username display
+            document.getElementById('profileUsername').textContent = username;
+        }
+
+        function initializeApp() {
+            // Initialize charts
+            initializeCharts();
+        }
+
+        function setupEventListeners() {
+            // Add account button
+            document.getElementById('addAccountBtn').addEventListener('click', () => {
+                document.getElementById('accountModal').classList.add('active');
+            });
+
+            // Account modal
+            document.getElementById('closeAccountModal').addEventListener('click', () => {
+                document.getElementById('accountModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelAccount').addEventListener('click', () => {
+                document.getElementById('accountModal').classList.remove('active');
+            });
+
+            document.getElementById('accountForm').addEventListener('submit', handleAccountSubmit);
+
+            // Transfer button
+            document.getElementById('transferBtn').addEventListener('click', handleTransfer);
+
+            // Export accounts button
+            document.getElementById('exportAccountsBtn').addEventListener('click', handleExportAccounts);
+
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filterTransactions(tab.dataset.filter);
+                });
+            });
+
+            // Filter button
+            document.getElementById('filterBtn').addEventListener('click', () => {
+                const filterType = document.getElementById('transactionFilter').value;
+                const dateRange = document.getElementById('dateRangeFilter').value;
+                filterTransactionsByCustom(filterType, dateRange);
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const profileDropdown = document.querySelector('.profile-dropdown');
+                const profileMenu = document.getElementById('profileMenu');
+
+                if (!profileDropdown.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+            });
+        }
+
+        function loadInitialData() {
+            // Load data from Firebase
+            db.ref(`users/${userId}/data`).once('value')
+                .then((snapshot) => {
+                    const data = snapshot.val() || {};
+
+                    // Load preferences
+                    if (data.preferences) {
+                        currencySymbol = data.preferences.currency === 'USD' ? '$' :
+                            data.preferences.currency === 'EUR' ? '€' :
+                                data.preferences.currency === 'GBP' ? '£' :
+                                    data.preferences.currency === 'JPY' ? '¥' : '₹';
+                    }
+
+                    // Load tags
+                    if (data.tags) {
+                        tags = Object.keys(data.tags).map(id => ({ id, ...data.tags[id] }));
+                    }
+
+                    // Load accounts
+                    if (data.accounts) {
+                        accounts = Object.keys(data.accounts).map(id => ({ id, ...data.accounts[id] }));
+                    } else {
+                        createDefaultAccounts();
+                    }
+
+                    // Load transactions
+                    if (data.transactions) {
+                        transactions = Object.keys(data.transactions).map(id => ({ id, ...data.transactions[id] }));
+                        transactions.sort((a, b) => b.timestamp - a.timestamp);
+                    }
+
+                    // Update UI
+                    populateSelects();
+                    updateDashboard();
+                    renderAccounts();
+
+                    // Set up real-time listeners
+                    setupRealtimeListeners();
+                })
+                .catch((error) => {
+                    console.error('Error loading data:', error);
+                    showNotification('error', 'Error', 'Failed to load data');
+                });
+        }
+
+        function setupRealtimeListeners() {
+            // Listen for transactions changes
+            db.ref(`users/${userId}/data/transactions`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                transactions = Object.keys(data).map(id => ({ id, ...data[id] }));
+                transactions.sort((a, b) => b.timestamp - a.timestamp);
+
+                updateDashboard();
+                if (selectedAccountId) {
+                    renderAccountDetails(selectedAccountId);
+                }
+            });
+
+            // Listen for accounts changes
+            db.ref(`users/${userId}/data/accounts`).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                accounts = Object.keys(data).map(id => ({ id, ...data[id] }));
+                populateSelects();
+                renderAccounts();
+            });
+        }
+
+        function createDefaultAccounts() {
+            const defaultAccounts = [
+                { name: "Cash", type: "cash", balance: 0 },
+                { name: "Bank Account", type: "bank", balance: 0 },
+                { name: "Credit Card", type: "credit", balance: 0 },
+                { name: "Savings", type: "savings", balance: 0 }
+            ];
+
+            const updates = {};
+            defaultAccounts.forEach((account) => {
+                const accountId = db.ref().child(`users/${userId}/data/accounts`).push().key;
+                updates[`users/${userId}/data/accounts/${accountId}`] = {
+                    name: account.name,
+                    type: account.type,
+                    balance: account.balance,
+                    createdAt: new Date().getTime()
+                };
+            });
+
+            db.ref().update(updates);
+        }
+
+        function populateSelects() {
+            // Populate transfer selects
+            const transferFromSelect = document.getElementById('transferFrom');
+            const transferToSelect = document.getElementById('transferTo');
+
+            transferFromSelect.innerHTML = '<option value="">From Account</option>';
+            transferToSelect.innerHTML = '<option value="">To Account</option>';
+
+            accounts.forEach(account => {
+                const fromOption = document.createElement('option');
+                fromOption.value = account.id;
+                fromOption.textContent = account.name;
+                transferFromSelect.appendChild(fromOption);
+
+                const toOption = document.createElement('option');
+                toOption.value = account.id;
+                toOption.textContent = account.name;
+                transferToSelect.appendChild(toOption);
+            });
+        }
+
+        function updateDashboard() {
+            // Calculate total balance
+            let totalBalance = 0;
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            // Calculate account balances
+            const accountBalances = {};
+            accounts.forEach(account => {
+                accountBalances[account.id] = account.balance || 0;
+            });
+
+            // Update balances based on transactions
+            transactions.forEach(tx => {
+                if (accountBalances[tx.accountId] !== undefined) {
+                    if (tx.type === 'income') {
+                        accountBalances[tx.accountId] += tx.amount;
+                        totalIncome += tx.amount;
+                    } else {
+                        accountBalances[tx.accountId] -= tx.amount;
+                        totalExpense += tx.amount;
+                    }
+                }
+            });
+
+            // Calculate total balance
+            Object.values(accountBalances).forEach(balance => {
+                totalBalance += balance;
+            });
+
+            // Update UI
+            document.getElementById('totalBalance').textContent = `${currencySymbol}${totalBalance.toFixed(2)}`;
+            document.getElementById('totalIncome').textContent = `${currencySymbol}${totalIncome.toFixed(2)}`;
+            document.getElementById('totalExpense').textContent = `${currencySymbol}${totalExpense.toFixed(2)}`;
+        }
+
+        function renderAccounts() {
+            const container = document.getElementById('accountsList');
+            container.innerHTML = '';
+
+            if (accounts.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-4">No accounts yet</p>';
+                return;
+            }
+
+            // Calculate account balances
+            const accountBalances = {};
+            accounts.forEach(account => {
+                accountBalances[account.id] = account.balance || 0;
+            });
+
+            transactions.forEach(tx => {
+                if (accountBalances[tx.accountId] !== undefined) {
+                    if (tx.type === 'income') {
+                        accountBalances[tx.accountId] += tx.amount;
+                    } else {
+                        accountBalances[tx.accountId] -= tx.amount;
+                    }
+                }
+            });
+
+            accounts.forEach(account => {
+                const balance = accountBalances[account.id] || 0;
+                const accountCard = document.createElement('div');
+                accountCard.className = `account-card ${account.type} ${selectedAccountId === account.id ? 'selected' : ''}`;
+                accountCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <h4 class="font-bold text-lg">${account.name}</h4>
+                            <p class="text-sm opacity-80">${account.type}</p>
+                        </div>
+                        <button class="text-white hover:text-red-200" onclick="deleteAccount('${account.id}')">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                    <div class="text-2xl font-bold">
+                        ${currencySymbol}${balance.toFixed(2)}
+                    </div>
+                `;
+                accountCard.addEventListener('click', () => selectAccount(account.id));
+                container.appendChild(accountCard);
+            });
+        }
+
+        function selectAccount(accountId) {
+            selectedAccountId = accountId;
+            renderAccounts();
+            renderAccountDetails(accountId);
+        }
+
+        function renderAccountDetails(accountId) {
+            const account = accounts.find(a => a.id === accountId);
+            if (!account) return;
+
+            // Update title
+            document.getElementById('selectedAccountTitle').textContent = `${account.name} Details`;
+            document.getElementById('accountDetails').classList.remove('hidden');
+
+            // Calculate account statistics
+            let accountBalance = account.balance || 0;
+            let accountIncome = 0;
+            let accountExpense = 0;
+
+            transactions.forEach(tx => {
+                if (tx.accountId === accountId) {
+                    if (tx.type === 'income') {
+                        accountBalance += tx.amount;
+                        accountIncome += tx.amount;
+                    } else {
+                        accountBalance -= tx.amount;
+                        accountExpense += tx.amount;
+                    }
+                }
+            });
+
+            // Update statistics
+            document.getElementById('accountBalance').textContent = `${currencySymbol}${accountBalance.toFixed(2)}`;
+            document.getElementById('accountIncome').textContent = `${currencySymbol}${accountIncome.toFixed(2)}`;
+            document.getElementById('accountExpense').textContent = `${currencySymbol}${accountExpense.toFixed(2)}`;
+
+            // Update chart
+            updateAccountChart(accountId);
+
+            // Render transactions
+            renderAccountTransactions(accountId);
+        }
+
+        function updateAccountChart(accountId) {
+            // Get transactions for this account
+            const accountTransactions = transactions.filter(tx => tx.accountId === accountId);
+
+            // Calculate daily totals for the last 30 days
+            const dailyData = {};
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                date.setHours(0, 0, 0, 0);
+                const dateKey = date.toISOString().slice(0, 10);
+
+                dailyData[dateKey] = { income: 0, expense: 0 };
+            }
+
+            accountTransactions.forEach(tx => {
+                const date = new Date(tx.timestamp);
+                const dateKey = date.toISOString().slice(0, 10);
+
+                if (dailyData[dateKey]) {
+                    if (tx.type === 'income') {
+                        dailyData[dateKey].income += tx.amount;
+                    } else {
+                        dailyData[dateKey].expense += tx.amount;
+                    }
+                }
+            });
+
+            const labels = Object.keys(dailyData).sort();
+            const incomeData = labels.map(label => dailyData[label].income);
+            const expenseData = labels.map(label => dailyData[label].expense);
+
+            // Update chart
+            if (charts.account) {
+                charts.account.destroy();
+            }
+
+            const ctx = document.getElementById('accountChart').getContext('2d');
+            charts.account = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: incomeData,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Expense',
+                            data: expenseData,
+                            borderColor: '#EF4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => currencySymbol + value
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderAccountTransactions(accountId, filteredTransactions = null) {
+            const container = document.getElementById('accountTransactions');
+            container.innerHTML = '';
+
+            let accountTransactions = filteredTransactions || transactions.filter(tx => tx.accountId === accountId);
+
+            if (accountTransactions.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No transactions for this account</p>';
+                return;
+            }
+
+            accountTransactions.forEach(tx => {
+                const tag = tags.find(t => t.id === tx.tagId);
+                const date = new Date(tx.timestamp);
+
+                const item = document.createElement('div');
+                item.className = `transaction-item ${tx.type}`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: ${tag?.color || '#6B7280'}20">
+                            <i class="${tx.type === 'income' ? 'ri-arrow-down-line text-green-600' : 'ri-arrow-up-line text-red-600'}"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium">${tag?.name || 'Unknown'}</div>
+                            <div class="text-sm text-gray-500">${date.toLocaleDateString()} • ${tx.note || 'No note'}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold ${tx.type === 'income' ? 'text-green-600' : 'text-red-600'}">
+                            ${tx.type === 'income' ? '+' : '-'}${currencySymbol}${tx.amount.toFixed(2)}
+                        </span>
+                        <button class="text-gray-400 hover:text-gray-600" onclick="editTransaction('${tx.id}')">
+                            <i class="ri-edit-line"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-red-600" onclick="deleteTransaction('${tx.id}')">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function filterTransactions(filterType) {
+            if (!selectedAccountId) return;
+
+            let filteredTransactions = transactions.filter(tx => tx.accountId === selectedAccountId);
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+
+            switch (filterType) {
+                case 'today':
+                    const startOfToday = new Date(today);
+                    startOfToday.setHours(0, 0, 0, 0);
+                    filteredTransactions = filteredTransactions.filter(tx =>
+                        tx.timestamp >= startOfToday.getTime() && tx.timestamp <= today.getTime()
+                    );
+                    break;
+                case 'week':
+                    const startOfWeek = new Date(today);
+                    startOfWeek.setDate(today.getDate() - today.getDay());
+                    startOfWeek.setHours(0, 0, 0, 0);
+                    filteredTransactions = filteredTransactions.filter(tx =>
+                        tx.timestamp >= startOfWeek.getTime() && tx.timestamp <= today.getTime()
+                    );
+                    break;
+                case 'month':
+                    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    startOfMonth.setHours(0, 0, 0, 0);
+                    filteredTransactions = filteredTransactions.filter(tx =>
+                        tx.timestamp >= startOfMonth.getTime() && tx.timestamp <= today.getTime()
+                    );
+                    break;
+                case 'year':
+                    const startOfYear = new Date(today.getFullYear(), 0, 1);
+                    startOfYear.setHours(0, 0, 0, 0);
+                    filteredTransactions = filteredTransactions.filter(tx =>
+                        tx.timestamp >= startOfYear.getTime() && tx.timestamp <= today.getTime()
+                    );
+                    break;
+            }
+
+            renderAccountTransactions(selectedAccountId, filteredTransactions);
+        }
+
+        function filterTransactionsByCustom(filterType, dateRange) {
+            if (!selectedAccountId) return;
+
+            let filteredTransactions = transactions.filter(tx => tx.accountId === selectedAccountId);
+
+            // Apply type filter
+            if (filterType !== 'all') {
+                filteredTransactions = filteredTransactions.filter(tx => tx.type === filterType);
+            }
+
+            // Apply date range filter
+            if (dateRange) {
+                const dates = dateRange.split(' to ');
+                if (dates.length === 2) {
+                    const startDate = new Date(dates[0]);
+                    startDate.setHours(0, 0, 0, 0);
+                    const endDate = new Date(dates[1]);
+                    endDate.setHours(23, 59, 59, 999);
+
+                    filteredTransactions = filteredTransactions.filter(tx =>
+                        tx.timestamp >= startDate.getTime() && tx.timestamp <= endDate.getTime()
+                    );
+                }
+            }
+
+            renderAccountTransactions(selectedAccountId, filteredTransactions);
+        }
+
+        function initializeCharts() {
+            // Charts will be initialized when needed
+        }
+
+        function handleAccountSubmit(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('accountName').value;
+            const type = document.getElementById('accountType').value;
+            const balance = parseFloat(document.getElementById('accountBalance').value) || 0;
+
+            if (!name) {
+                showNotification('error', 'Missing Information', 'Please enter an account name');
+                return;
+            }
+
+            const account = {
+                name,
+                type,
+                balance,
+                createdAt: new Date().getTime()
+            };
+
+            const accountId = db.ref().child(`users/${userId}/data/accounts`).push().key;
+
+            db.ref(`users/${userId}/data/accounts/${accountId}`).set(account)
+                .then(() => {
+                    showNotification('success', 'Account Added', 'Your account has been created');
+                    document.getElementById('accountForm').reset();
+                    document.getElementById('accountModal').classList.remove('active');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function handleTransfer() {
+            const fromAccountId = document.getElementById('transferFrom').value;
+            const toAccountId = document.getElementById('transferTo').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const note = document.getElementById('transferNote').value || 'Transfer';
+
+            if (!fromAccountId || !toAccountId || !amount || amount <= 0) {
+                showNotification('error', 'Invalid Transfer', 'Please fill all fields with valid values');
+                return;
+            }
+
+            if (fromAccountId === toAccountId) {
+                showNotification('error', 'Invalid Transfer', 'Source and destination accounts cannot be the same');
+                return;
+            }
+
+            // Create transfer transactions
+            const timestamp = new Date().getTime();
+            const transferId = db.ref().child(`users/${userId}/data/transfers`).push().key;
+
+            // Expense from source account
+            const expenseTransaction = {
+                type: 'expense',
+                amount,
+                accountId: fromAccountId,
+                tagId: tags.find(t => t.name === 'Transfer')?.id || '',
+                note: `${note} to ${accounts.find(a => a.id === toAccountId)?.name}`,
+                timestamp,
+                transferId
+            };
+
+            // Income to destination account
+            const incomeTransaction = {
+                type: 'income',
+                amount,
+                accountId: toAccountId,
+                tagId: tags.find(t => t.name === 'Transfer')?.id || '',
+                note: `${note} from ${accounts.find(a => a.id === fromAccountId)?.name}`,
+                timestamp,
+                transferId
+            };
+
+            // Save both transactions
+            const updates = {};
+            const expenseId = db.ref().child(`users/${userId}/data/transactions`).push().key;
+            const incomeId = db.ref().child(`users/${userId}/data/transactions`).push().key;
+
+            updates[`users/${userId}/data/transactions/${expenseId}`] = expenseTransaction;
+            updates[`users/${userId}/data/transactions/${incomeId}`] = incomeTransaction;
+
+            db.ref().update(updates)
+                .then(() => {
+                    showNotification('success', 'Transfer Complete', `Successfully transferred ${currencySymbol}${amount.toFixed(2)}`);
+                    document.getElementById('transferFrom').value = '';
+                    document.getElementById('transferTo').value = '';
+                    document.getElementById('transferAmount').value = '';
+                    document.getElementById('transferNote').value = '';
+                })
+                .catch((error) => {
+                    showNotification('error', 'Transfer Failed', error.message);
+                });
+        }
+
+        function handleExportAccounts() {
+            // Calculate account balances
+            const accountBalances = {};
+            accounts.forEach(account => {
+                accountBalances[account.id] = account.balance || 0;
+            });
+
+            transactions.forEach(tx => {
+                if (accountBalances[tx.accountId] !== undefined) {
+                    if (tx.type === 'income') {
+                        accountBalances[tx.accountId] += tx.amount;
+                    } else {
+                        accountBalances[tx.accountId] -= tx.amount;
+                    }
+                }
+            });
+
+            // Prepare export data
+            const exportData = accounts.map(account => ({
+                name: account.name,
+                type: account.type,
+                balance: accountBalances[account.id] || 0,
+                createdAt: account.createdAt
+            }));
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `accounts-export-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('success', 'Export Successful', 'Your accounts data has been exported');
+        }
+
+        function deleteAccount(accountId) {
+            if (!confirm('Are you sure you want to delete this account? This will also delete all transactions associated with this account.')) return;
+
+            // Delete account
+            db.ref(`users/${userId}/data/accounts/${accountId}`).remove()
+                .then(() => {
+                    // Delete all transactions for this account
+                    const accountTransactions = transactions.filter(tx => tx.accountId === accountId);
+                    const updates = {};
+
+                    accountTransactions.forEach(tx => {
+                        updates[`users/${userId}/data/transactions/${tx.id}`] = null;
+                    });
+
+                    return db.ref().update(updates);
+                })
+                .then(() => {
+                    showNotification('success', 'Account Deleted', 'The account and its transactions have been removed');
+                    if (selectedAccountId === accountId) {
+                        selectedAccountId = '';
+                        document.getElementById('selectedAccountTitle').textContent = 'Select an Account';
+                        document.getElementById('accountDetails').classList.add('hidden');
+                        document.getElementById('accountTransactions').innerHTML = '<p class="text-gray-500 text-center py-8">Select an account to view transactions</p>';
+                    }
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function editTransaction(transactionId) {
+            // This would open a modal to edit the transaction
+            // For simplicity, we'll just show a notification
+            showNotification('info', 'Edit Transaction', 'Transaction editing would open here');
+        }
+
+        function deleteTransaction(transactionId) {
+            if (!confirm('Are you sure you want to delete this transaction?')) return;
+
+            db.ref(`users/${userId}/data/transactions/${transactionId}`).remove()
+                .then(() => {
+                    showNotification('success', 'Transaction Deleted', 'The transaction has been removed');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Error', error.message);
+                });
+        }
+
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            const profileMenu = document.getElementById('profileMenu');
+            profileMenu.classList.toggle('active');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            // Clear all localStorage data
+            localStorage.clear();
+
+            // Redirect to login page
+            window.location.href = 'index.html';
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        function showNotification(type, title, message) {
+            const notificationEl = document.getElementById('notification');
+            const iconEl = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            // Set notification type
+            notificationEl.className = `notification ${type}`;
+
+            // Set icon
+            switch (type) {
+                case 'success':
+                    iconEl.className = 'ri-check-line text-xl text-green-600';
+                    break;
+                case 'error':
+                    iconEl.className = 'ri-error-warning-line text-xl text-red-600';
+                    break;
+                case 'info':
+                    iconEl.className = 'ri-information-line text-xl text-blue-600';
+                    break;
+            }
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Show notification
+            notificationEl.classList.add('show');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notificationEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuContent = document.querySelector('.mobile-menu-content');
+
+            if (!mobileMenuContent.contains(e.target) && !e.target.closest('.md\\:hidden')) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
