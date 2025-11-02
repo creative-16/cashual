@@ -774,12 +774,41 @@
             min-width: 300px;
             max-height: 400px;
             overflow-y: auto;
+            pointer-events: none;
+            /* Disable pointer events when hidden */
         }
 
         .calendar-dropdown.active {
             transform: translateY(0);
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
+            /* Enable pointer events when visible */
+        }
+
+        /* Calendar close button */
+        .calendar-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .calendar-close-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.1);
         }
 
         /* Force flatpickr to always show desktop version */
@@ -1665,6 +1694,9 @@
                                         <i class="ri-calendar-event-line"></i>
                                     </button>
                                     <div id="calendarDropdown" class="calendar-dropdown">
+                                        <button class="calendar-close-btn" onclick="closeCalendar()">
+                                            <i class="ri-close-line"></i>
+                                        </button>
                                         <div id="inlineCalendar"></div>
                                     </div>
                                 </div>
@@ -1944,6 +1976,7 @@
             suggestions: []
         };
         let activeNotificationTab = 'general';
+        let calendarInitialized = false;
 
         // Default data
         const defaultTags = [
@@ -2052,9 +2085,6 @@
             document.getElementById('transactionDate').value = todayString;
             document.getElementById('quickDate').value = todayString;
 
-            // Initialize inline calendar with proper mobile configuration
-            initializeCalendar();
-
             // Initialize charts
             initializeCharts();
 
@@ -2063,6 +2093,9 @@
         }
 
         function initializeCalendar() {
+            // Only initialize if not already initialized
+            if (calendarInitialized) return;
+
             // Create a new calendar instance for the dropdown
             const calendarContainer = document.getElementById('inlineCalendar');
 
@@ -2083,7 +2116,7 @@
                     if (selectedDates.length > 0) {
                         selectedDate = selectedDates[0];
                         updateTodayView();
-                        document.getElementById('calendarDropdown').classList.remove('active');
+                        closeCalendar();
                     }
                 },
                 onReady: function (selectedDates, dateStr, instance) {
@@ -2146,6 +2179,16 @@
                     });
                 }
             });
+
+            calendarInitialized = true;
+        }
+
+        function destroyCalendar() {
+            if (inlineCalendar && calendarInitialized) {
+                inlineCalendar.destroy();
+                inlineCalendar = null;
+                calendarInitialized = false;
+            }
         }
 
         function initializeAccountCarousel() {
@@ -2260,7 +2303,7 @@
                 updateTodayView();
             });
 
-            // Date picker button
+            // Date picker button - ONLY open when clicking the button
             document.getElementById('datePickerBtn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 const dropdown = document.getElementById('calendarDropdown');
@@ -2275,10 +2318,7 @@
                 // Open dropdown
                 dropdown.classList.add('active');
 
-                // Reinitialize calendar to ensure it displays correctly
-                if (inlineCalendar) {
-                    inlineCalendar.destroy();
-                }
+                // Initialize calendar only when opening the dropdown
                 initializeCalendar();
                 inlineCalendar.setDate(selectedDate);
             });
@@ -2288,9 +2328,17 @@
                 const datePickerBtn = document.getElementById('datePickerBtn');
                 const calendarDropdown = document.getElementById('calendarDropdown');
 
+                // Only close if clicking outside both the button and the dropdown
                 if (!datePickerBtn.contains(e.target) && !calendarDropdown.contains(e.target)) {
                     calendarDropdown.classList.remove('active');
+                    // Destroy calendar when closing dropdown to prevent date changes
+                    destroyCalendar();
                 }
+            });
+
+            // Prevent calendar dropdown from closing when clicking inside it
+            document.getElementById('calendarDropdown').addEventListener('click', (e) => {
+                e.stopPropagation();
             });
 
             // Export and backup
@@ -2345,6 +2393,13 @@
                     setActiveNotificationTab(type);
                 });
             });
+        }
+
+        // Close calendar function
+        function closeCalendar() {
+            document.getElementById('calendarDropdown').classList.remove('active');
+            // Destroy calendar when closing dropdown to prevent date changes
+            destroyCalendar();
         }
 
         function loadInitialData() {
