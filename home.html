@@ -306,6 +306,102 @@
             background: linear-gradient(135deg, var(--indian-saffron) 0%, #FF7E5F 100%);
         }
 
+        .account-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .account-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .account-carousel {
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .account-carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .account-slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .account-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .account-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .account-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .account-nav-button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .account-nav-button {
+                display: flex;
+            }
+        }
+
+        .account-nav-button:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
         .tag {
             display: inline-flex;
             align-items: center;
@@ -535,8 +631,8 @@
 
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            bottom: 20px;
+            left: 20px;
             padding: 16px 24px;
             border-radius: 12px;
             background: white;
@@ -545,22 +641,22 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transform: translateX(400px);
+            transform: translateY(400px);
             transition: transform 0.3s ease;
         }
 
         .notification.show {
-            transform: translateX(0);
-            animation: slideInRight 0.3s ease;
+            transform: translateY(0);
+            animation: slideInUp 0.3s ease;
         }
 
-        @keyframes slideInRight {
+        @keyframes slideInUp {
             from {
-                transform: translateX(100%);
+                transform: translateY(100%);
             }
 
             to {
-                transform: translateX(0);
+                transform: translateY(0);
             }
         }
 
@@ -668,7 +764,7 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            z-index: 100;
+            z-index: 1000;
             padding: 20px;
             margin-top: 8px;
             transform: translateY(-10px);
@@ -676,6 +772,8 @@
             visibility: hidden;
             transition: all 0.3s ease;
             min-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .calendar-dropdown.active {
@@ -684,10 +782,116 @@
             visibility: visible;
         }
 
+        /* Force flatpickr to always show desktop version */
         .calendar-dropdown .flatpickr-calendar {
-            box-shadow: none;
-            border: none;
-            background: transparent;
+            width: 100% !important;
+            max-width: 300px !important;
+            box-shadow: none !important;
+            border: none !important;
+            background: transparent !important;
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            transform: none !important;
+        }
+
+        .calendar-dropdown .flatpickr-calendar.inline {
+            width: 100% !important;
+            max-width: 300px !important;
+            box-shadow: none !important;
+            border: none !important;
+            background: transparent !important;
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            transform: none !important;
+            margin-bottom: 0 !important;
+        }
+
+        .calendar-dropdown .flatpickr-months {
+            margin: 0 0 10px 0 !important;
+            padding: 0 !important;
+        }
+
+        .calendar-dropdown .flatpickr-month {
+            height: auto !important;
+            fill: #667eea !important;
+        }
+
+        .calendar-dropdown .flatpickr-current-month {
+            color: #667eea !important;
+            font-weight: 600 !important;
+            padding: 5px 0 0 0 !important;
+        }
+
+        .calendar-dropdown .flatpickr-months .flatpickr-prev-month,
+        .calendar-dropdown .flatpickr-months .flatpickr-next-month {
+            fill: #667eea !important;
+            padding: 10px !important;
+        }
+
+        .calendar-dropdown .flatpickr-months .flatpickr-prev-month:hover,
+        .calendar-dropdown .flatpickr-months .flatpickr-next-month:hover {
+            fill: #4F46E5 !important;
+        }
+
+        .calendar-dropdown .flatpickr-weekdays {
+            margin: 0 0 5px 0 !important;
+        }
+
+        .calendar-dropdown .flatpickr-weekday {
+            color: #667eea !important;
+            font-weight: 600 !important;
+        }
+
+        .calendar-dropdown .flatpickr-days {
+            width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .calendar-dropdown .dayContainer {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .calendar-dropdown .flatpickr-day {
+            width: calc(14.28% - 2px) !important;
+            height: 32px !important;
+            line-height: 32px !important;
+            margin: 1px !important;
+            font-size: 14px !important;
+            border-radius: 8px !important;
+        }
+
+        .calendar-dropdown .flatpickr-day:hover {
+            background: #E0E7FF !important;
+            color: #667eea !important;
+        }
+
+        .calendar-dropdown .flatpickr-day.selected {
+            background: #667eea !important;
+            color: white !important;
+            border-color: #667eea !important;
+        }
+
+        .calendar-dropdown .flatpickr-day.today {
+            border-color: #667eea !important;
+        }
+
+        .calendar-dropdown .flatpickr-day.today:hover {
+            background: #667eea !important;
+            color: white !important;
+        }
+
+        .calendar-dropdown .flatpickr-day.prevMonthDay,
+        .calendar-dropdown .flatpickr-day.nextMonthDay {
+            color: #ccc !important;
         }
 
         .icon-btn {
@@ -719,6 +923,9 @@
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .profile-dropdown {
@@ -946,6 +1153,257 @@
             flex-wrap: wrap;
         }
 
+        /* Delete Confirmation Modal */
+        .delete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .delete-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .delete-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            text-align: center;
+        }
+
+        .delete-modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .delete-modal-icon i {
+            font-size: 30px;
+            color: var(--danger);
+        }
+
+        .delete-modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .delete-modal-message {
+            color: var(--gray);
+            margin-bottom: 24px;
+        }
+
+        .delete-modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Notification Section */
+        .notification-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .notification-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .notification-tab {
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .notification-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .notification-tab.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .notification-tab.has-notifications {
+            background: var(--warning);
+            color: white;
+        }
+
+        .notification-tab.has-notifications.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .notification-content {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--dark);
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: var(--pastel-gray);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .notification-item-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            padding-right: 30px;
+        }
+
+        .notification-item-message {
+            font-size: 14px;
+            color: var(--gray);
+            padding-right: 30px;
+        }
+
+        .notification-item-time {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .notification-item-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .notification-item-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .empty-notification {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+
+        /* Category Legend Scroll for Desktop */
+        @media (min-width: 1024px) {
+            .category-legend-container {
+                max-height: 120px;
+                overflow-y: auto;
+                padding-right: 10px;
+                margin-top: 16px;
+            }
+
+            .category-legend-container::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .category-legend-container::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            .category-legend-container::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            .category-legend-container::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+        }
+
+        /* Calendar Dropdown Fix for Mobile */
+        @media (max-width: 768px) {
+            .calendar-dropdown {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 90% !important;
+                max-width: 350px !important;
+                max-height: 80vh !important;
+                overflow-y: auto !important;
+                margin-top: 0 !important;
+                z-index: 9999 !important;
+            }
+
+            .calendar-dropdown.active {
+                transform: translate(-50%, -50%) !important;
+            }
+
+            .calendar-dropdown .flatpickr-calendar {
+                width: 100% !important;
+                max-width: 350px !important;
+            }
+
+            .calendar-dropdown .flatpickr-calendar.inline {
+                width: 100% !important;
+                max-width: 350px !important;
+            }
+
+            .calendar-dropdown .flatpickr-day {
+                width: calc(14.28% - 2px) !important;
+                height: 36px !important;
+                line-height: 36px !important;
+                font-size: 16px !important;
+            }
+        }
+
         @media (max-width: 1024px) {
             .equal-height-row {
                 flex-direction: column;
@@ -1148,13 +1606,20 @@
 
     <!-- Main Content -->
     <main class="main-container">
-        <!-- Stats Overview - Moved to Top -->
+        <!-- Stats Overview - Updated with Account View -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="stat-card">
-                <div class="relative z-10">
-                    <p class="text-white/80 text-sm mb-1">Current Balance</p>
-                    <p class="text-3xl font-bold" id="currentBalance">₹0.00</p>
-                    <p class="text-white/60 text-xs mt-2">Updated just now</p>
+            <!-- Account View Card (replaces Current Balance) -->
+            <div class="account-card">
+                <div class="account-carousel">
+                    <div class="account-carousel-inner" id="accountCarousel">
+                        <!-- Account slides will be dynamically added here -->
+                    </div>
+                    <button class="account-nav-button" id="nextAccountBtn">
+                        <i class="ri-arrow-right-s-line"></i>
+                    </button>
+                    <div class="account-controls" id="accountControls">
+                        <!-- Account dots will be dynamically added here -->
+                    </div>
                 </div>
             </div>
             <div class="stat-card income">
@@ -1226,10 +1691,10 @@
                                 Category Spending
                             </h4>
                         </div>
-                        <div class="pie-chart-container flex-grow">
+                        <div class="pie-chart-container">
                             <canvas id="categoryPieChart"></canvas>
                         </div>
-                        <div id="categoryLegend" class="mt-4 space-y-2">
+                        <div id="categoryLegend" class="category-legend-container">
                             <!-- Category legend will be loaded here -->
                         </div>
                     </div>
@@ -1261,6 +1726,35 @@
                 <button id="quickAddBtn" class="btn btn-primary">
                     <i class="ri-add-line"></i>
                 </button>
+            </div>
+        </div>
+
+        <!-- Notification Section -->
+        <div class="notification-section">
+            <h2 class="text-xl font-bold mb-4">Notifications</h2>
+            <div class="notification-tabs">
+                <button class="notification-tab active" data-type="general" id="generalTab">
+                    <i class="ri-notification-3-line"></i>
+                    General
+                </button>
+                <button class="notification-tab" data-type="alert" id="alertTab">
+                    <i class="ri-alert-line"></i>
+                    Alerts
+                </button>
+                <button class="notification-tab" data-type="achieved" id="achievedTab">
+                    <i class="ri-trophy-line"></i>
+                    Achieved
+                </button>
+                <button class="notification-tab" data-type="suggestions" id="suggestionsTab">
+                    <i class="ri-lightbulb-line"></i>
+                    Suggestions
+                </button>
+            </div>
+            <div class="notification-content" id="notificationContent">
+                <div class="empty-notification">
+                    <i class="ri-notification-off-line text-4xl mb-2"></i>
+                    <p>No notifications yet</p>
+                </div>
             </div>
         </div>
 
@@ -1373,6 +1867,26 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-icon">
+                <i class="ri-delete-bin-line"></i>
+            </div>
+            <h3 class="delete-modal-title">Delete Transaction?</h3>
+            <p class="delete-modal-message">Are you sure you want to delete this transaction? This action cannot be
+                undone.</p>
+            <div class="delete-modal-buttons">
+                <button id="confirmDelete" class="btn btn-danger flex-1">
+                    <i class="ri-delete-bin-line"></i> Delete
+                </button>
+                <button id="cancelDelete" class="btn btn-outline flex-1">
+                    <i class="ri-close-line"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification -->
     <div id="notification" class="notification">
         <i id="notificationIcon" class="ri-check-line text-xl"></i>
@@ -1418,6 +1932,18 @@
         let userId = '';
         let username = '';
         let inlineCalendar = null;
+        let currentAccountIndex = 0;
+        let nonZeroAccounts = [];
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let transactionToDelete = null;
+        let notifications = {
+            general: [],
+            alert: [],
+            achieved: [],
+            suggestions: []
+        };
+        let activeNotificationTab = 'general';
 
         // Default data
         const defaultTags = [
@@ -1468,6 +1994,7 @@
             initializeApp();
             setupEventListeners();
             loadInitialData();
+            initializeNotifications();
         });
 
         function checkAuthStatus() {
@@ -1525,22 +2052,166 @@
             document.getElementById('transactionDate').value = todayString;
             document.getElementById('quickDate').value = todayString;
 
-            // Initialize inline calendar
-            inlineCalendar = flatpickr("#inlineCalendar", {
+            // Initialize inline calendar with proper mobile configuration
+            initializeCalendar();
+
+            // Initialize charts
+            initializeCharts();
+
+            // Initialize account carousel
+            initializeAccountCarousel();
+        }
+
+        function initializeCalendar() {
+            // Create a new calendar instance for the dropdown
+            const calendarContainer = document.getElementById('inlineCalendar');
+
+            // Clear any existing calendar
+            calendarContainer.innerHTML = '';
+
+            // Initialize the calendar with specific configuration to prevent mobile dropdown
+            inlineCalendar = flatpickr(calendarContainer, {
                 inline: true,
                 dateFormat: "d/m/y",
                 defaultDate: selectedDate,
+                disableMobile: true,
+                static: true,
+                allowInput: false,
+                clickOpens: false,
+                animate: false,
                 onChange: (selectedDates) => {
                     if (selectedDates.length > 0) {
                         selectedDate = selectedDates[0];
                         updateTodayView();
                         document.getElementById('calendarDropdown').classList.remove('active');
                     }
+                },
+                onReady: function (selectedDates, dateStr, instance) {
+                    // Force the calendar to display as inline on all devices
+                    const calendar = instance.calendarContainer;
+
+                    // Remove all mobile-specific classes and styles
+                    calendar.classList.remove('flatpickr-mobile');
+                    calendar.classList.add('inline');
+
+                    // Force desktop view styling
+                    calendar.style.position = 'static';
+                    calendar.style.top = 'auto';
+                    calendar.style.left = 'auto';
+                    calendar.style.right = 'auto';
+                    calendar.style.bottom = 'auto';
+                    calendar.style.transform = 'none';
+                    calendar.style.width = '100%';
+                    calendar.style.height = 'auto';
+                    calendar.style.maxWidth = '300px';
+                    calendar.style.maxHeight = '400px';
+                    calendar.style.overflow = 'visible';
+                    calendar.style.boxShadow = 'none';
+                    calendar.style.border = 'none';
+                    calendar.style.background = 'transparent';
+                    calendar.style.margin = '0';
+                    calendar.style.padding = '0';
+
+                    // Ensure proper calendar structure
+                    const months = calendar.querySelector('.flatpickr-months');
+                    if (months) {
+                        months.style.position = 'static';
+                        months.style.display = 'block';
+                    }
+
+                    const days = calendar.querySelector('.flatpickr-days');
+                    if (days) {
+                        days.style.position = 'static';
+                        days.style.display = 'block';
+                        days.style.width = '100%';
+                        days.style.overflow = 'visible';
+                    }
+
+                    const dayContainer = calendar.querySelector('.dayContainer');
+                    if (dayContainer) {
+                        dayContainer.style.width = '100%';
+                        dayContainer.style.minWidth = '100%';
+                        dayContainer.style.maxWidth = '100%';
+                        dayContainer.style.position = 'static';
+                        dayContainer.style.display = 'grid';
+                        dayContainer.style.gridTemplateColumns = 'repeat(7, 1fr)';
+                    }
+
+                    // Force all days to be visible
+                    const allDays = calendar.querySelectorAll('.flatpickr-day');
+                    allDays.forEach(day => {
+                        day.style.display = 'inline-block';
+                        day.style.position = 'static';
+                        day.style.visibility = 'visible';
+                    });
                 }
             });
+        }
 
-            // Initialize charts
-            initializeCharts();
+        function initializeAccountCarousel() {
+            const carousel = document.getElementById('accountCarousel');
+            const controls = document.getElementById('accountControls');
+
+            // Add touch event listeners for mobile swipe
+            carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+            carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+            // Add navigation button for desktop
+            document.getElementById('nextAccountBtn').addEventListener('click', nextAccount);
+        }
+
+        function handleTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }
+
+        function handleTouchEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        }
+
+        function handleSwipeGesture() {
+            if (touchEndX < touchStartX - 50) {
+                // Swipe left - next account
+                nextAccount();
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swipe right - previous account
+                prevAccount();
+            }
+        }
+
+        function nextAccount() {
+            if (nonZeroAccounts.length > 0) {
+                currentAccountIndex = (currentAccountIndex + 1) % nonZeroAccounts.length;
+                updateAccountCarousel();
+            }
+        }
+
+        function prevAccount() {
+            if (nonZeroAccounts.length > 0) {
+                currentAccountIndex = (currentAccountIndex - 1 + nonZeroAccounts.length) % nonZeroAccounts.length;
+                updateAccountCarousel();
+            }
+        }
+
+        function updateAccountCarousel() {
+            const carousel = document.getElementById('accountCarousel');
+            const controls = document.getElementById('accountControls');
+
+            // Update carousel position
+            carousel.style.transform = `translateX(-${currentAccountIndex * 100}%)`;
+
+            // Update dots
+            controls.innerHTML = '';
+            nonZeroAccounts.forEach((account, index) => {
+                const dot = document.createElement('div');
+                dot.className = `account-dot ${index === currentAccountIndex ? 'active' : ''}`;
+                dot.addEventListener('click', () => {
+                    currentAccountIndex = index;
+                    updateAccountCarousel();
+                });
+                controls.appendChild(dot);
+            });
         }
 
         function setupEventListeners() {
@@ -1590,14 +2261,26 @@
             });
 
             // Date picker button
-            document.getElementById('datePickerBtn').addEventListener('click', () => {
+            document.getElementById('datePickerBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
                 const dropdown = document.getElementById('calendarDropdown');
-                dropdown.classList.toggle('active');
+                const isActive = dropdown.classList.contains('active');
 
-                // Update calendar to show selected date
-                if (inlineCalendar) {
-                    inlineCalendar.setDate(selectedDate);
+                // Close dropdown if it's already open
+                if (isActive) {
+                    dropdown.classList.remove('active');
+                    return;
                 }
+
+                // Open dropdown
+                dropdown.classList.add('active');
+
+                // Reinitialize calendar to ensure it displays correctly
+                if (inlineCalendar) {
+                    inlineCalendar.destroy();
+                }
+                initializeCalendar();
+                inlineCalendar.setDate(selectedDate);
             });
 
             // Close calendar when clicking outside
@@ -1631,6 +2314,36 @@
                 if (!profileDropdown.contains(e.target) && !profileMenu.contains(e.target)) {
                     profileMenu.classList.remove('active');
                 }
+            });
+
+            // Delete confirmation modal
+            document.getElementById('confirmDelete').addEventListener('click', () => {
+                if (transactionToDelete) {
+                    db.ref(`users/${userId}/data/transactions/${transactionToDelete}`).remove()
+                        .then(() => {
+                            showNotification('success', 'Transaction Deleted', 'The transaction has been removed');
+                            document.getElementById('deleteModal').classList.remove('active');
+                            transactionToDelete = null;
+                        })
+                        .catch((error) => {
+                            showNotification('error', 'Error', error.message);
+                            document.getElementById('deleteModal').classList.remove('active');
+                            transactionToDelete = null;
+                        });
+                }
+            });
+
+            document.getElementById('cancelDelete').addEventListener('click', () => {
+                document.getElementById('deleteModal').classList.remove('active');
+                transactionToDelete = null;
+            });
+
+            // Notification tabs
+            document.querySelectorAll('.notification-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const type = tab.getAttribute('data-type');
+                    setActiveNotificationTab(type);
+                });
             });
         }
 
@@ -1678,6 +2391,7 @@
                     populateSelects();
                     updateDashboard();
                     renderAllViews();
+                    updateAccountView();
 
                     // Set up real-time listeners
                     setupRealtimeListeners();
@@ -1697,6 +2411,7 @@
 
                 updateDashboard();
                 renderAllViews();
+                updateAccountView();
             });
 
             // Listen for tags changes
@@ -1709,14 +2424,15 @@
             // Listen for accounts changes
             db.ref(`users/${userId}/data/accounts`).on('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                accounts = Object.keys(data).map(id => ({ id, ...data[id] }));
+                accounts = Object.keys(data).map(id => ({ id, ...data.accounts[id] }));
                 populateSelects();
+                updateAccountView();
             });
 
             // Listen for budgets changes
             db.ref(`users/${userId}/data/budgets`).on('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                budgets = Object.keys(data).map(id => ({ id, ...data[id] }));
+                budgets = Object.keys(data).map(id => ({ id, ...data.budgets[id] }));
             });
         }
 
@@ -1785,7 +2501,12 @@
                     select.appendChild(option);
                 });
 
-                if (currentValue) select.value = currentValue;
+                // Set default account if available
+                if (defaultAccountId && !currentValue) {
+                    select.value = defaultAccountId;
+                } else if (currentValue) {
+                    select.value = currentValue;
+                }
             });
         }
 
@@ -1839,7 +2560,6 @@
             });
 
             // Update UI
-            document.getElementById('currentBalance').textContent = `${currencySymbol}${balance.toFixed(2)}`;
             document.getElementById('todayIncome').textContent = `${currencySymbol}${todayIncome.toFixed(2)}`;
             document.getElementById('todayExpense').textContent = `${currencySymbol}${todayExpense.toFixed(2)}`;
             document.getElementById('monthlyTotal').textContent = `${currencySymbol}${monthlyTotal.toFixed(2)}`;
@@ -1879,6 +2599,91 @@
 
             // Update monthly overview
             updateMonthlyOverview();
+        }
+
+        function updateAccountView() {
+            // Calculate account balances
+            const accountBalances = {};
+
+            // Initialize all accounts with 0 balance
+            accounts.forEach(account => {
+                accountBalances[account.id] = {
+                    ...account,
+                    balance: 0
+                };
+            });
+
+            // Calculate balance for each account based on transactions
+            transactions.forEach(tx => {
+                if (accountBalances[tx.accountId]) {
+                    if (tx.type === 'income') {
+                        accountBalances[tx.accountId].balance += tx.amount;
+                    } else {
+                        accountBalances[tx.accountId].balance -= tx.amount;
+                    }
+                }
+            });
+
+            // Filter accounts with non-zero balance
+            nonZeroAccounts = Object.values(accountBalances).filter(account => account.balance !== 0);
+
+            // If no accounts with non-zero balance, show all accounts
+            if (nonZeroAccounts.length === 0) {
+                nonZeroAccounts = Object.values(accountBalances);
+            }
+
+            // Sort accounts to put default account first
+            if (defaultAccountId) {
+                const defaultAccountIndex = nonZeroAccounts.findIndex(account => account.id === defaultAccountId);
+                if (defaultAccountIndex !== -1) {
+                    const defaultAccount = nonZeroAccounts.splice(defaultAccountIndex, 1)[0];
+                    nonZeroAccounts.unshift(defaultAccount);
+                    currentAccountIndex = 0;
+                }
+            }
+
+            // Reset current index if it's out of bounds
+            if (currentAccountIndex >= nonZeroAccounts.length) {
+                currentAccountIndex = 0;
+            }
+
+            // Update account carousel
+            updateAccountCarousel();
+        }
+
+        function updateAccountCarousel() {
+            const carousel = document.getElementById('accountCarousel');
+            const controls = document.getElementById('accountControls');
+
+            // Clear existing content
+            carousel.innerHTML = '';
+            controls.innerHTML = '';
+
+            // Create slides for each account
+            nonZeroAccounts.forEach((account, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'account-slide';
+                slide.innerHTML = `
+                    <div class="relative z-10">
+                        <p class="text-white/80 text-sm mb-1">${account.name}</p>
+                        <p class="text-3xl font-bold">${currencySymbol}${account.balance.toFixed(2)}</p>
+                        <p class="text-white/60 text-xs mt-2">${account.type}</p>
+                    </div>
+                `;
+                carousel.appendChild(slide);
+
+                // Create dot indicator
+                const dot = document.createElement('div');
+                dot.className = `account-dot ${index === currentAccountIndex ? 'active' : ''}`;
+                dot.addEventListener('click', () => {
+                    currentAccountIndex = index;
+                    updateAccountCarousel();
+                });
+                controls.appendChild(dot);
+            });
+
+            // Set carousel position
+            carousel.style.transform = `translateX(-${currentAccountIndex * 100}%)`;
         }
 
         function isDateToday(date) {
@@ -1937,7 +2742,7 @@
                         <button class="text-gray-400 hover:text-gray-600" onclick="editTransaction('${tx.id}')">
                             <i class="ri-edit-line"></i>
                         </button>
-                        <button class="text-gray-400 hover:text-red-600" onclick="deleteTransaction('${tx.id}')">
+                        <button class="text-gray-400 hover:text-red-600" onclick="confirmDeleteTransaction('${tx.id}')">
                             <i class="ri-delete-bin-line"></i>
                         </button>
                     </div>
@@ -2158,7 +2963,7 @@
                         <button class="text-gray-400 hover:text-gray-600" onclick="editTransaction('${tx.id}')">
                             <i class="ri-edit-line"></i>
                         </button>
-                        <button class="text-gray-400 hover:text-red-600" onclick="deleteTransaction('${tx.id}')">
+                        <button class="text-gray-400 hover:text-red-600" onclick="confirmDeleteTransaction('${tx.id}')">
                             <i class="ri-delete-bin-line"></i>
                         </button>
                     </div>
@@ -2315,6 +3120,11 @@
             document.getElementById('transactionModal').dataset.transactionId = transactionId;
         }
 
+        function confirmDeleteTransaction(transactionId) {
+            transactionToDelete = transactionId;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
         function deleteTransaction(transactionId) {
             if (!confirm('Are you sure you want to delete this transaction?')) return;
 
@@ -2453,8 +3263,153 @@
                 mobileMenu.classList.remove('active');
             }
         });
+
+        // Notification System
+        function initializeNotifications() {
+            // Set up notification tabs
+            setActiveNotificationTab('general');
+
+            // Add some sample notifications for demonstration
+            addNotification('general', 'Welcome to Cashual', 'Your budget planner is ready to use. Start by adding your first transaction!');
+            addNotification('general', 'Tip of the Day', 'Try setting up budgets for different categories to track your spending better.');
+        }
+
+        function setActiveNotificationTab(type) {
+            activeNotificationTab = type;
+
+            // Update tab UI
+            document.querySelectorAll('.notification-tab').forEach(tab => {
+                if (tab.getAttribute('data-type') === type) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            // Update notification content
+            renderNotifications(type);
+        }
+
+        function renderNotifications(type) {
+            const content = document.getElementById('notificationContent');
+            const typeNotifications = notifications[type] || [];
+
+            if (typeNotifications.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-notification">
+                        <i class="ri-notification-off-line text-4xl mb-2"></i>
+                        <p>No ${type} notifications yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            content.innerHTML = '';
+
+            typeNotifications.forEach(notification => {
+                const item = document.createElement('div');
+                item.className = 'notification-item';
+                item.innerHTML = `
+                    <button class="notification-item-close" onclick="removeNotification('${type}', ${notification.id})">
+                        <i class="ri-close-line"></i>
+                    </button>
+                    <div class="notification-item-title">${notification.title}</div>
+                    <div class="notification-item-message">${notification.message}</div>
+                    <div class="notification-item-time">${formatTime(notification.timestamp)}</div>
+                `;
+                content.appendChild(item);
+            });
+        }
+
+        function removeNotification(type, notificationId) {
+            if (notifications[type]) {
+                notifications[type] = notifications[type].filter(n => n.id !== notificationId);
+                renderNotifications(type);
+                updateNotificationTab(type);
+            }
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+
+            return date.toLocaleDateString();
+        }
+
+        function addNotification(type, title, message, isNew = true) {
+            if (!notifications[type]) {
+                notifications[type] = [];
+            }
+
+            const notification = {
+                id: Date.now(),
+                title,
+                message,
+                timestamp: new Date().getTime(),
+                isNew
+            };
+
+            notifications[type].unshift(notification);
+
+            // Update tab background color
+            updateNotificationTab(type);
+
+            // Show new notification temporarily
+            if (isNew) {
+                showNewNotification(notification);
+            }
+
+            // If this is the active tab, update the content
+            if (activeNotificationTab === type) {
+                renderNotifications(type);
+            }
+        }
+
+        function updateNotificationTab(type) {
+            const tab = document.getElementById(`${type}Tab`);
+            const count = notifications[type] ? notifications[type].length : 0;
+
+            if (count > 0) {
+                tab.classList.add('has-notifications');
+            } else {
+                tab.classList.remove('has-notifications');
+            }
+        }
+
+        function showNewNotification(notification) {
+            // Create a temporary notification element
+            const tempNotification = document.createElement('div');
+            tempNotification.className = 'notification show';
+            tempNotification.innerHTML = `
+                <i class="ri-notification-3-line text-xl text-blue-600"></i>
+                <div>
+                    <p class="font-medium">${notification.title}</p>
+                    <p class="text-sm text-gray-600">${notification.message}</p>
+                </div>
+            `;
+
+            document.body.appendChild(tempNotification);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                tempNotification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(tempNotification);
+                }, 300);
+            }, 5000);
+        }
     </script>
 </body>
-
 
 </html>
